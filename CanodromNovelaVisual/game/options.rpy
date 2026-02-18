@@ -12,7 +12,7 @@
 ##
 ## The _() surrounding the string marks it as eligible for translation.
 
-define config.name = _("CanodromNovelaVisual")
+define config.name = _("Disco Framework")
 
 
 ## Determines if the title given above is shown on the main menu screen. Set
@@ -23,8 +23,7 @@ define gui.show_name = True
 
 ## The version of the game.
 
-define config.version = "1.0"
-
+define config.version = "1.2"
 
 ## Text that is placed on the game's about screen. Place the text between the
 ## triple-quotes, and leave a blank line between paragraphs.
@@ -37,14 +36,13 @@ define gui.about = _p("""
 ## distribution. This must be ASCII-only, and must not contain spaces, colons,
 ## or semicolons.
 
-define build.name = "CanodromNovelaVisual"
+define build.name = "DiscoFramework"
 
 
 ## Sounds and music ############################################################
 
-## These three variables control, among other things, which mixers are shown
-## to the player by default. Setting one of these to False will hide the
-## appropriate mixer.
+## These three variables control which mixers are shown to the player by
+## default. Setting one of these to False will hide the appropriate mixer.
 
 define config.has_sound = True
 define config.has_music = True
@@ -63,6 +61,14 @@ define config.has_voice = True
 ## game, until it is stopped or another file is played.
 
 # define config.main_menu_music = "main-menu-theme.ogg"
+#define config.main_menu_music = "audio/chef_martial_artist.mp3"
+
+#Edit: Audio Channel Defaults
+#These config variables set the default volumes on various audio mixers.
+#This should be a number between 0.0 and 1.0, with 1.0 being full volume.
+define config.default_music_volume = 0.7
+define config.default_sfx_volume = 0.7
+define config.default_voice_volume = 0.7
 
 
 ## Transitions #################################################################
@@ -89,11 +95,15 @@ define config.after_load_transition = None
 
 ## Used when entering the main menu after the game has ended.
 
-define config.end_game_transition = None
+define config.end_game_transition = fade
 
 
 ## A variable to set the transition used when the game starts does not exist.
 ## Instead, use a with statement after showing the initial scene.
+
+#Edits:
+## Used when entering the main menu from the splashscreen of when you start up the game.
+define config.end_splash_transition = dissolve
 
 
 ## Window management ###########################################################
@@ -143,7 +153,7 @@ default preferences.afm_time = 15
 ## This generally should not be changed, and if it is, should always be a
 ## literal string, not an expression.
 
-define config.save_directory = "CanodromNovelaVisual-1770220276"
+define config.save_directory = "DiscoFramework-1625242948"
 
 
 ## Icon ########################################################################
@@ -186,8 +196,12 @@ init python:
 
     ## To archive files, classify them as 'archive'.
 
-    # build.classify('game/**.png', 'archive')
-    # build.classify('game/**.jpg', 'archive')
+    #build.classify('game/**.png', 'archive')
+    #build.classify('game/**.jpg', 'archive')
+    #build.classify('game/**.ogg', 'archive')
+    #build.classify('game/**.wav', 'archive')
+    #build.classify('game/**.rpyc', 'archive')
+    #build.classify('game/**.rpy', 'archive')
 
     ## Files matching documentation patterns are duplicated in a mac app build,
     ## so they appear in both the app and the zip file.
@@ -196,9 +210,9 @@ init python:
     build.documentation('*.txt')
 
 
-## A Google Play license key is required to perform in-app purchases. It can be
-## found in the Google Play developer console, under "Monetize" > "Monetization
-## Setup" > "Licensing".
+## A Google Play license key is required to download expansion files and perform
+## in-app purchases. It can be found on the "Services & APIs" page of the Google
+## Play developer console.
 
 # define build.google_play_key = "..."
 
@@ -207,3 +221,13 @@ init python:
 ## by a slash.
 
 # define build.itch_project = "renpytom/test-project"
+
+## Autosaves/Quicksaves #########
+
+# You can turn on/off autosave and quicksave options here if you want:
+
+init python:
+    config.has_quicksave = True
+    config.has_autosave = False
+    config.autosave_on_quit = False
+    config.autosave_on_choice = False
