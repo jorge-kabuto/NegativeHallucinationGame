@@ -210,9 +210,9 @@ style input:
 screen choice(items):
     style_prefix "choice"
 
-    vbox:
-        for i in items:
-            textbutton i.caption action i.action
+    # vbox:
+        # for i in items:
+        #     textbutton i.caption action i.action
 
 ## When this is true, menu captions will be spoken by the narrator. When false,
 ## menu captions will be displayed as empty buttons.
@@ -225,8 +225,8 @@ style choice_button_text is button_text
 
 style choice_vbox:
     xalign 0.5
-    ypos 405
-    yanchor 0.5
+    # ypos 405
+    yanchor 1.0
 
     spacing gui.choice_spacing
 
@@ -252,7 +252,7 @@ screen quick_menu():
         hbox:
             style_prefix "quick"
 
-            xalign 0.97#Shifted right.#0.5
+            xalign 0.5#Shifted right.#0.5
             yalign 1.0
 
             textbutton _("Back") action Rollback()
@@ -1249,6 +1249,14 @@ transform delayed_blink(delay, cycle):
         pause (cycle - .4)
         repeat
 
+transform choice_appear(time):
+    alpha 0.0
+    pause 0.2
+    easein time alpha 1.0
+
+transform enlarge():
+    yzoom 0.0
+    easein 0.5 yzoom 1.0
 
 style skip_frame is empty
 style skip_text is gui_text
@@ -1315,8 +1323,17 @@ style notify_text:
 
 
 #To have previous dialogue text fade a little:
-transform nvl_faded:
-    alpha 0.5
+transform nvl_faded(v=0.0):
+    alpha (0.5 - ((v-1)*0.5) / 6.0)
+    xoffset (150 * (v-1)) - 150
+    yoffset 95.0
+    zoom (1.0 - (0.5*(max(v-2.0,0))) / 6.0)
+
+    easeout 0.33:
+        alpha (0.5 - (v*0.5) / 6.0)
+        xoffset (150 * v) - 150
+        yoffset 0
+        zoom (1.0 - (0.5*max(v-1.0,0)) / 6.0)
 
 screen nvl(dialogue, items=None):
 
@@ -1324,20 +1341,12 @@ screen nvl(dialogue, items=None):
         style "nvl_window"
 
         has vbox:
+            yanchor 1.0
+            xanchor 0.0
+            yalign 0.2
+            xalign 0.1
             spacing gui.nvl_spacing
-
-        ## Displays dialogue in either a vpgrid or the vbox.
-        if gui.nvl_height:
-
-            vpgrid:
-                cols 1
-                yinitial 1.0
-
-                use nvl_dialogue(dialogue)
-
-        else:
-
-            #use nvl_dialogue(dialogue)
+            first_spacing gui.nvl_spacing
 
         #Adding effect that fades past dialogue:
         # Display dialogue.
@@ -1345,6 +1354,8 @@ screen nvl(dialogue, items=None):
                 $ (who, what, who_id, what_id, window_id) = dialogue[i]
                 window:
                     id window_id
+                    ysize 80
+                    
 
                     if i == len(dialogue) - 1:
                         if who is not None:
@@ -1355,22 +1366,29 @@ screen nvl(dialogue, items=None):
                     else:
                         if i == len(dialogue) - 2:
                             if who is not None:
-                                text who id who_id at nvl_faded
+                                text who id who_id at nvl_faded(len(dialogue) - i)
 
-                            text what id what_id at nvl_faded
+                            text what id what_id at nvl_faded(len(dialogue) - i)
                         else:
                             if who is not None:
-                                text who id who_id at nvl_faded
+                                text who id who_id at nvl_faded(len(dialogue) - i)
 
-                            text what id what_id at nvl_faded
+                            text what id what_id at nvl_faded(len(dialogue) - i)
                             ##########End of faded text effect
 
         ## Displays the menu, if given. The menu may be displayed incorrectly if
         ## config.narrator_menu is set to True, as it is above.
-        for i in items:
-            textbutton i.caption:
-                action i.action
-                style "nvl_button"
+        vbox at enlarge():
+            xanchor 0.25
+            xalign 0.1
+            spacing 0
+            yoffset -25
+            for i in items:
+                textbutton i.caption:
+                    action i.action at choice_appear(1.2)
+                    style "nvl_button"
+                    ysize int(gui.nvl_button_y_size*gui.nvl_button_size_initial_fraction + _math.trunc(len(i.caption)/gui.nvl_buttom_jumpline)*gui.nvl_button_y_size*(1.0-gui.nvl_button_size_initial_fraction))
+                    yoffset gui.nvl_button_y_offset*gui.nvl_button_offset_initial_fraction + _math.trunc(len(i.caption)/gui.nvl_buttom_jumpline)*gui.nvl_button_y_offset*(1.0-gui.nvl_button_offset_initial_fraction)
 
     add SideImage() xalign 0.53 yalign 0.25 # Character portrait position.
 
@@ -1410,13 +1428,14 @@ style nvl_button_text is button_text
 style nvl_window:
     xfill True
     yfill True
-    xpos 0.4 # Edit: Shifted NVL box to the right.
+    xpos -100 # Edit: Shifted NVL box to the right.
 
-    background Transform("gui/nvl.png", alpha=0.8) # The alpha number here adjusts the transparancy of the image
+    # background Transform("gui/nvl.png", alpha=0.8) # The alpha number here adjusts the transparancy of the image
     padding gui.nvl_borders.padding
 
 style nvl_entry:
     xfill True
+    yanchor 0.0
     ysize gui.nvl_height
 
 style nvl_label:
@@ -1449,10 +1468,26 @@ style nvl_thought:
 style nvl_button:
     properties gui.button_properties("nvl_button")
     xpos gui.nvl_button_xpos
+    ypos gui.nvl_button_ypos + 50
     xanchor gui.nvl_button_xalign
+    yanchor 0.5
+    xalign 0.5
+    # background Frame("gui/frame.png")
+    ysize 75
 
 style nvl_button_text:
     properties gui.button_text_properties("nvl_button")
+    yanchor 0.5
+    # xanchor 0.0
+    textshader "typewriter"
+    text_align 0.0
+    slow_cps True
+    slow_abortable True
+    rest_indent 38
+    kerning -1.5
+    italic True
+    # adjust_spacing "vertical"
+    # background Frame("gui/frame.png")
 
 style tooltip_text:
     color "#f3f3f3" # text colour

@@ -23,6 +23,7 @@ init python:
 ## GUI Configuration Variables
 ################################################################################
 
+define config.default_textshader = "typewriter"
 
 ## Colors ######################################################################
 ##
@@ -135,7 +136,7 @@ define gui.namebox_tile = False
 ## The placement of dialogue relative to the textbox. These can be a whole
 ## number of pixels relative to the left or top side of the textbox, or 0.5 to
 ## center.
-define gui.dialogue_xpos = 402
+define gui.dialogue_xpos = 0.5
 define gui.dialogue_ypos = 75
 
 ## The maximum width of dialogue text, in pixels.
@@ -356,7 +357,7 @@ define gui.history_name_width = 233
 define gui.history_name_xalign = 1.0
 
 ## The position, width, and alignment of the dialogue text.
-define gui.history_text_xpos = 255
+define gui.history_text_xpos = 0
 define gui.history_text_ypos = 3
 define gui.history_text_width = 1110
 define gui.history_text_xalign = 0.0
@@ -379,35 +380,46 @@ define gui.nvl_height = None # Changed to spacing between dialogue#173
 
 ## The spacing between NVL-mode entries when gui.nvl_height is None, and between
 ## NVL-mode entries and an NVL-mode menu.
-define gui.nvl_spacing = 30 # Made spacing between dialogue larger.#15
+define gui.nvl_spacing = 15 # Made spacing between dialogue larger.#15
 
 ## The position, width, and alignment of the label giving the name of the
 ## speaking character.
-define gui.nvl_name_xpos = 645
-define gui.nvl_name_ypos = 0
+define gui.x_pos = 450
+define gui.y_pos = 700
+
+define gui.nvl_name_xpos = gui.x_pos
+define gui.nvl_name_ypos = gui.y_pos
 define gui.nvl_name_width = 225
-define gui.nvl_name_xalign = 1.0
+define gui.nvl_name_xalign = 0.0
 
 ## The position, width, and alignment of the dialogue text.
-define gui.nvl_text_xpos = 400 #675
-define gui.nvl_text_ypos = 0 #12
-define gui.nvl_text_width = 720 #885
+define gui.nvl_text_xpos = gui.x_pos #675
+define gui.nvl_text_ypos = gui.y_pos #12
+define gui.nvl_text_width = 885 #885
 define gui.nvl_text_xalign = 0.0
 
 ## The position, width, and alignment of nvl_thought text (the text said by the
 ## nvl_narrator character.)
-define gui.nvl_thought_xpos = 400 #360
-define gui.nvl_thought_ypos = 0
-define gui.nvl_thought_width = 720 # Narrowed width.#1170
+define gui.nvl_thought_xpos = gui.x_pos #360
+define gui.nvl_thought_ypos = gui.y_pos
+define gui.nvl_thought_width = 885 # Narrowed width.#1170
 define gui.nvl_thought_xalign = 0.0
 
 ## The position of nvl menu_buttons.
-define gui.nvl_button_xpos = 410 #Shifted left.#675
+define gui.nvl_button_xpos =  gui.x_pos #Shifted left.#675
+define gui.nvl_button_ypos = gui.y_pos #Shifted left.#675
 define gui.nvl_button_xalign = 0.0
+define gui.nvl_button_yalign = 1.0
 #Edit: Added below line to change the size of choices:
 define gui.nvl_button_text_size = gui.text_size
-define gui.nvl_button_width = 700 #Narrowed choices width
-define gui.nvl_button_height = 25 #Made the space between multiple choices thinner
+define gui.nvl_button_width = 850 #Narrowed choices width
+define gui.nvl_button_height = 30 #Made the space between multiple choices thinner
+
+define gui.nvl_buttom_jumpline = 51.0
+define gui.nvl_button_y_size = 60
+define gui.nvl_button_size_initial_fraction = 0.66
+define gui.nvl_button_y_offset = 30
+define gui.nvl_button_offset_initial_fraction = 0.66
 
 ## Localization ################################################################
 
