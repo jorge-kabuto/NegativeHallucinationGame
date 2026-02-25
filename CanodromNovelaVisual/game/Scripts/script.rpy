@@ -6,26 +6,28 @@ label start:
     # add a file (named either "bg room.png" or "bg room.jpg") to the
     # images directory to show it.
     
-    # scene dark_waters
-    jump TwiceShadowedIntro
+    scene dark_waters
+    # jump TwiceShadowedIntro
 
     # This shows a character sprite. A placeholder is used, but you can
     # replace it by adding a file named "eileen happy.png" to the images
     # directory.
 
-    e "Primordial blackness envelops you. Time itself is opaque to your senses."
-    e "Provided that you still have those. Or that you ever possesed them to begin with."
-    e "Reality is inky, flowing, a secret river causing downpour on a lightless cave."
-    e "A few rules still seem to apply, strange and bent as they are, like a backwards elbow."
-    e "The cave, your gut tells, has a shape."
-    e "Countours are imagined and projected: a limit on the dark, something to sustain and contain it."
-    e "The deepest of azures fills you now. There's a top and a bottom, dissonance emerging."
-    e "You wander upwards, buoyant despite never having drawn breath."
-    e "The dark expells you, now differentiated. Lines drawn in the sand, turn to marble."
-    e "And yet you know: a gnawing in the world, black maggots festering on the blanched pourous stone."
-    e "There's something you're forgetting."
-    e "NEGATIVE HALLUCINATION"
-
+    n "Primordial blackness envelops you. Time itself is opaque to your senses."
+    n "Provided that you still have those. Or that you ever possesed them to begin with."
+    n "Reality is inky, flowing, a secret river causing downpour on a lightless cave."
+    n "A few rules still seem to apply, strange and bent as they are, like a backwards elbow."
+    n "The cave, your gut tells, has a shape."
+    n "Countours are imagined and projected: a limit on the dark, something to sustain and contain it."
+    n "The deepest of azures fills you now. There's a top and a bottom, dissonance emerging."
+    n "You wander upwards, buoyant despite never having drawn breath."
+    n "The dark expells you, now differentiated. Lines drawn in the sand, turn to marble."
+    n "And yet you know: a gnawing in the world, black maggots festering on the blanched pourous stone."
+    n "There's something you're forgetting."
+    aaa"NEGATIVE HALLUCINATION"
+    
+    jump ph_intro
+    jump TwiceShadowedIntro
     jump ReflectionIntro
 
 label ReflectionIntro:
@@ -59,21 +61,32 @@ label TwiceShadowedIntro:
 
 label TwiceShadowedMenu:
 menu (nvl=True):
+    aaa"\nI should tread carefully..."
+
     "That's the second time you've called me shadow, why is that?":
-        jump TwiceShadowedShadow
+        jump TwiceShadowedPossession
     "I seek to leave this dream, same as you. We can help each other.":
         jump TwiceShadowedPossession
     "I stumbled upon you by chance, release your influence so that I can leave!":
-        jump TwiceShadowedBargain   
+        jump TwiceShadowedPossession   
     "Well, first of all, I wouldn't, uh, mind an introduction from you y'know?
     I don't want to seem rude, or anything like the like, so if you just heh,
     *hand over* your name this could be the start of a beautiful liaison. 
     Or just buddies. If y-you want, that is.":
-        jump TwiceShadowedBargain   
+        jump TwiceShadowedPossession   
 
 label TwiceShadowedShadow:
     return
 label TwiceShadowedPossession:
+    tw "YOU SEEM TO BE KIDDING. HOW GLIB OF YOU, IGNORANT AS YOU ARE IN THIS REALM WHERE *I* HAVE STOOD FOR AEONS."
+    tw "I AM NOT NOT BE KIDDEN WITH, PUNY SHADOW. I SHALL... TEACH YOU A LESSON, IF NOTHING ELSE, DUE TO MY PREDISPOSITION."
+    aaa "You feel a pressure rising. A kind of pounding in your vicinity."
+    aaa "It's your heart. It accelerates, rising in tone like a metronome, and then a buzz, and finally a crackling until you can't seem to hear it anymore."
+    whirlwind "Something feels wrong..." (func=e)
+    whirlwind "THE SOUND OF THE GION SHOJA BELLS ECHOES THE IMPERMANENCE OF ALL THINGS. 
+    THE COLOR OF THE SALA FLOWERS REVEALS THE TRUTH THAT THE PROSPEROUS MUST DECLINE. 
+    HOWEVER, ONLY WE ARE THE EXCEPTION." (func=tw)
+    whirlwind "Please.... just stop." (func=e)
     return
 label TwiceShadowedBargain:
     return

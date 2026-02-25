@@ -376,11 +376,11 @@ define gui.nvl_list_length = 8
 
 ## The height of an NVL-mode entry. Set this to None to have the entries
 ## dynamically adjust height.
-define gui.nvl_height = None # Changed to spacing between dialogue#173
+define gui.nvl_height = 100 # Changed to spacing between dialogue#173
 
 ## The spacing between NVL-mode entries when gui.nvl_height is None, and between
 ## NVL-mode entries and an NVL-mode menu.
-define gui.nvl_spacing = 15 # Made spacing between dialogue larger.#15
+define gui.nvl_spacing = 0 # Made spacing between dialogue larger.#15
 
 ## The position, width, and alignment of the label giving the name of the
 ## speaking character.
@@ -395,14 +395,14 @@ define gui.nvl_name_xalign = 0.0
 ## The position, width, and alignment of the dialogue text.
 define gui.nvl_text_xpos = gui.x_pos #675
 define gui.nvl_text_ypos = gui.y_pos #12
-define gui.nvl_text_width = 885 #885
+define gui.nvl_text_width = 850 #885
 define gui.nvl_text_xalign = 0.0
 
 ## The position, width, and alignment of nvl_thought text (the text said by the
 ## nvl_narrator character.)
 define gui.nvl_thought_xpos = gui.x_pos #360
 define gui.nvl_thought_ypos = gui.y_pos
-define gui.nvl_thought_width = 885 # Narrowed width.#1170
+define gui.nvl_thought_width = 850 # Narrowed width.#1170
 define gui.nvl_thought_xalign = 0.0
 
 ## The position of nvl menu_buttons.
@@ -416,10 +416,12 @@ define gui.nvl_button_width = 850 #Narrowed choices width
 define gui.nvl_button_height = 30 #Made the space between multiple choices thinner
 
 define gui.nvl_buttom_jumpline = 51.0
-define gui.nvl_button_y_size = 60
+define gui.nvl_button_y_size = 80
 define gui.nvl_button_size_initial_fraction = 0.66
-define gui.nvl_button_y_offset = 30
+define gui.nvl_button_y_offset = 40
 define gui.nvl_button_offset_initial_fraction = 0.66
+
+define gui.nvl_anim_time = 0.5
 
 ## Localization ################################################################
 

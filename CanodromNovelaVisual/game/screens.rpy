@@ -1256,7 +1256,7 @@ transform choice_appear(time):
 
 transform enlarge():
     yzoom 0.0
-    easein 0.5 yzoom 1.0
+    easeout gui.nvl_anim_time yzoom 1.0
 
 style skip_frame is empty
 style skip_text is gui_text
@@ -1324,63 +1324,116 @@ style notify_text:
 
 #To have previous dialogue text fade a little:
 transform nvl_faded(v=0.0):
-    alpha (0.5 - ((v-1)*0.5) / 6.0)
+    alpha (0.33 - ((v-1)*0.33) / 6.0)
     xoffset (150 * (v-1)) - 150
-    yoffset 95.0
+    yoffset gui.nvl_height + gui.nvl_spacing
     zoom (1.0 - (0.5*(max(v-2.0,0))) / 6.0)
 
-    easeout 0.33:
-        alpha (0.5 - (v*0.5) / 6.0)
+    easeout gui.nvl_anim_time:
+        alpha (0.33 - (v*0.33) / 6.0)
         xoffset (150 * v) - 150
         yoffset 0
         zoom (1.0 - (0.5*max(v-1.0,0)) / 6.0)
 
+transform nvl_fadin(v=0.0):
+    alpha 0.0
+    xoffset (150 * (v-1)) - 150
+    yoffset gui.nvl_height + gui.nvl_spacing
+    zoom (1.0 - (0.5*(max(v-2.0,0))) / 6.0)
+
+    easeout gui.nvl_anim_time:
+        alpha (0.33 - (v*0.33) / 6.0)
+        xoffset (150 * v) - 150
+        yoffset 0
+        zoom (1.0 - (0.5*max(v-1.0,0)) / 6.0)
+
+transform nvl_bg_faded(v=0.0, total_offset=0.0):
+
+    alpha (0.33 - ((v-1)*0.33) / 6.0)
+    xoffset (v-1)*150 - gui.nvl_text_width/2
+    yoffset -280 - gui.nvl_height*(v-1)
+    zoom (1.0 - (0.5*max(v-2,0)) / 6.0)
+    yanchor 0.0
+    xanchor 0.0
+
+    easeout gui.nvl_anim_time:
+        alpha (0.33 - (v*0.33) / 6.0)
+        xoffset v*150 - gui.nvl_text_width/2
+        yoffset -280 - gui.nvl_height*v - total_offset*1.94
+        zoom (1.0 - (0.5*max(v-1.0,0)) / 6.0)
+
+transform nvl_bg_menu(total_offset=0.0):
+    yoffset -gui.nvl_height+ 40
+    easeout gui.nvl_anim_time:
+        yoffset -gui.nvl_height+ 40 - total_offset*1.94
+
+
 screen nvl(dialogue, items=None):
+
+    if len(items) > 0:
+        $ total_offset = -gui.nvl_button_y_size * 0.1
+    else:
+        $ total_offset = 0.0
+    for i in items:
+        $ total_offset += gui.nvl_button_y_offset*gui.nvl_button_offset_initial_fraction + _math.trunc(len(i.caption)/gui.nvl_buttom_jumpline)*gui.nvl_button_y_offset*(1.0-gui.nvl_button_offset_initial_fraction)
+
+    for i in range(0, len(dialogue)):
+        if i == len(dialogue) - 1:
+            window at nvl_bg_menu(total_offset):
+                yanchor 1.0
+                ysize 280
+                xsize 850
+                background Frame("nvl_textbox_bg_single_filled.png")
+        else:
+            window at nvl_bg_faded(len(dialogue) - i-1, total_offset):
+                yanchor 1.0
+                yoffset -gui.nvl_height+ 40
+                ysize 280
+                xsize 850
+                background Frame("nvl_textbox_bg_single_filled.png")
 
     window:
         style "nvl_window"
+        # background "nvl_textbox_bg.png"
 
         has vbox:
             yanchor 1.0
             xanchor 0.0
-            yalign 0.2
+            yalign 0.133
             xalign 0.1
             spacing gui.nvl_spacing
             first_spacing gui.nvl_spacing
+            xpos 100
+            order_reverse True
 
         #Adding effect that fades past dialogue:
         # Display dialogue.
             for i in range(0, len(dialogue)):
                 $ (who, what, who_id, what_id, window_id) = dialogue[i]
                 window:
-                    id window_id
-                    ysize 80
-                    
+                    id window_id 
+                    yoffset -(len(dialogue) > 1)
 
                     if i == len(dialogue) - 1:
                         if who is not None:
                             text who id who_id
-
                         text what id what_id
-
+                    elif i == len(dialogue) - 2:
+                        if who is not None:
+                            text who id who_id at nvl_fadin(len(dialogue) - i)
+                        text what id what_id at nvl_fadin(len(dialogue) - i)
                     else:
-                        if i == len(dialogue) - 2:
-                            if who is not None:
-                                text who id who_id at nvl_faded(len(dialogue) - i)
+                        if who is not None:
+                            text who id who_id at nvl_faded(len(dialogue) - i)
+                        text what id what_id at nvl_faded(len(dialogue) - i)
 
-                            text what id what_id at nvl_faded(len(dialogue) - i)
-                        else:
-                            if who is not None:
-                                text who id who_id at nvl_faded(len(dialogue) - i)
-
-                            text what id what_id at nvl_faded(len(dialogue) - i)
-                            ##########End of faded text effect
-
+                    
         ## Displays the menu, if given. The menu may be displayed incorrectly if
         ## config.narrator_menu is set to True, as it is above.
         vbox at enlarge():
             xanchor 0.25
             xalign 0.1
+            ypos 125
             spacing 0
             yoffset -25
             for i in items:
@@ -1389,6 +1442,7 @@ screen nvl(dialogue, items=None):
                     style "nvl_button"
                     ysize int(gui.nvl_button_y_size*gui.nvl_button_size_initial_fraction + _math.trunc(len(i.caption)/gui.nvl_buttom_jumpline)*gui.nvl_button_y_size*(1.0-gui.nvl_button_size_initial_fraction))
                     yoffset gui.nvl_button_y_offset*gui.nvl_button_offset_initial_fraction + _math.trunc(len(i.caption)/gui.nvl_buttom_jumpline)*gui.nvl_button_y_offset*(1.0-gui.nvl_button_offset_initial_fraction)
+                    background Frame("nvl_textbox_bg_menu_opt.png")
 
     add SideImage() xalign 0.53 yalign 0.25 # Character portrait position.
 
@@ -1428,9 +1482,10 @@ style nvl_button_text is button_text
 style nvl_window:
     xfill True
     yfill True
-    xpos -100 # Edit: Shifted NVL box to the right.
+    xpos 0 # Edit: Shifted NVL box to the right.
 
     # background Transform("gui/nvl.png", alpha=0.8) # The alpha number here adjusts the transparancy of the image
+    # background Frame("gui/frame.png")
     padding gui.nvl_borders.padding
 
 style nvl_entry:
@@ -1473,7 +1528,6 @@ style nvl_button:
     yanchor 0.5
     xalign 0.5
     # background Frame("gui/frame.png")
-    ysize 75
 
 style nvl_button_text:
     properties gui.button_text_properties("nvl_button")
@@ -1482,10 +1536,13 @@ style nvl_button_text:
     textshader "typewriter"
     text_align 0.0
     slow_cps True
+    slow_cps_multiplier 1.0
     slow_abortable True
-    rest_indent 38
+    first_indent 15
+    rest_indent 15
     kerning -1.5
     italic True
+    
     # adjust_spacing "vertical"
     # background Frame("gui/frame.png")
 
@@ -1528,6 +1585,7 @@ screen quick_menu():
 style window:
     variant "small"
     background "gui/phone/textbox.png"
+    # background Frame("gui/frame.png")
 
 style radio_button:
     variant "small"
