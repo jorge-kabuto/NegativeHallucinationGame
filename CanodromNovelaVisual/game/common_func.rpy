@@ -22,14 +22,14 @@ init python:
     def whirlwind(what, func, *args, **kwargs):
         
         prev_anim_time = store.gui.nvl_anim_time
-        store.gui.nvl_anim_time = max(0.01, 0.9/store.preferences.text_cps)
+        store.gui.nvl_anim_time = 0.0#max(0.01, 0.9/store.preferences.text_cps)
         msg = ""
         for c in what[:-1]:
             msg += c
             func("{cps=0}"+msg, interact=False)
             renpy.exports.mode("say")
             renpy.ui.saybehavior()
-            rv = renpy.ui.interact(mouse="pause", pause=store.gui.nvl_anim_time)
+            rv = renpy.ui.interact(mouse="pause", pause=0.01)
             if renpy.is_skipping() or rv != False:
                 break
 
@@ -46,9 +46,7 @@ init python:
         if renpy.last_say().what is not None and store.prev_was_menu:
             import re
             statement = re.sub("{color.*color}", "", store.last_choice_label)
-            preferences.text_cps = 0
-            renpy.exports.say(None, "{nw}{color=[youtext]}??? —\n" + statement + "{/color}")
-            preferences.text_cps = 80
+            renpy.exports.say(None, "{cps=0}{nw}{color=[youtext]}??? —\n" + statement + "{/color}{/cps}")
             store.prev_was_menu = False
 
         if renpy.last_say().what is not None and "menu-nvl" in name:
