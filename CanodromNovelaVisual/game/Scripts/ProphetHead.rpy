@@ -10,6 +10,7 @@ label ph_intro:
     ph "You shouldn't have come."
     ph "You couldn't have, even if you wanted to."
     ph "...*Cough-gh* Sorry. Long time without a talk. What is your name?"
+label ph_1:
     menu (nvl=True):
         "Yours comes first.":
             ph "I.... Okay. I had a long time to give myself a shape. I am the Prophet."
@@ -21,6 +22,7 @@ label ph_intro:
             ph "Others may have already tried to give you one, *C-Cough**Cough* or even take the potential to even own one from you."
             e "Color me impressed. I am starting to believe you are indeed a Prophet."
             ph "Mock me all you want."
+            jump ph_1
 
         # "Or what? The worst you could do is give me evil eye.":
         # "(Ignore him and explore around)":

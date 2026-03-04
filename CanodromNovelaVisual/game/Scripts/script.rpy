@@ -35,9 +35,18 @@ label start:
     n "There's something you're forgetting."
     aaa"NEGATIVE HALLUCINATION"
     
-    jump ReflectionIntro
-    jump ph_intro
-    jump TwiceShadowedIntro
+    menu(nvl=True):
+        aaa"~DEBUG MENU~"
+        "ph_intro":
+            jump ph_intro
+        "TwiceShadowedIntro":
+            jump TwiceShadowedIntro
+        "ReflectionIntro":
+            jump ReflectionIntro
+        "ReflectionIntro":
+            jump ReflectionIntro
+        "ReflectionIntro":
+            jump ReflectionIntro
 
 label ReflectionIntro:
 
@@ -70,7 +79,7 @@ label TwiceShadowedIntro:
 
 label TwiceShadowedMenu:
 menu (nvl=True):
-    aaa"\nI should tread carefully..."
+    aaa"I should tread carefully..."
 
     "That's the second time you've called me shadow, why is that?":
         jump TwiceShadowedPossession

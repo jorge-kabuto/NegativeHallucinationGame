@@ -41,20 +41,20 @@ init python:
     # config.default_textshader = "default"
     # config.textshader_callbacks["default"] = get_default_textshader
 
-    # def menu_prev_line(name):
+    def menu_prev_line(name):
 
-    #     if renpy.last_say().what is not None and store.prev_was_menu:
-    #         import re
-    #         statement = re.sub("{color.*color}", "", store.last_choice_label)
-    #         preferences.text_cps = 0
-    #         renpy.exports.say(None, "{nw}{color=[youtext]}??? —" + statement + "{/color}")
-    #         preferences.text_cps = 80
-    #         store.prev_was_menu = False
+        if renpy.last_say().what is not None and store.prev_was_menu:
+            import re
+            statement = re.sub("{color.*color}", "", store.last_choice_label)
+            preferences.text_cps = 0
+            renpy.exports.say(None, "{nw}{color=[youtext]}??? —\n" + statement + "{/color}")
+            preferences.text_cps = 80
+            store.prev_was_menu = False
 
-    #     if renpy.last_say().what is not None and "menu-nvl" in name:
-    #         store.prev_was_menu = True
+        if renpy.last_say().what is not None and "menu-nvl" in name:
+            store.prev_was_menu = True
         
-    # config.statement_callbacks.append(menu_prev_line)
+    config.statement_callbacks.append(menu_prev_line)
 
     renpy.register_shader("example.gradient", variables="""
         uniform vec4 u_gradient_left;
