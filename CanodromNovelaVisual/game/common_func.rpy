@@ -131,6 +131,111 @@ init python:
         gl_FragColor = (0.3/CONTRAST)*COLOUR_1 + (1. - 0.3/CONTRAST)*(COLOUR_1*c1p + COLOUR_2*c2p + vec4(c3p*COLOUR_3.rgb, c3p*COLOUR_1.a)) + light;
     """)
 
+    renpy.register_shader("ReactionDiffusion2", variables="""
+        uniform sampler2D tex0;
+        uniform float u_time;
+        uniform vec2 u_drawable_size;
+
+        varying vec2 v_tex_coord;
+        varying vec2 v_coord;
+
+        attribute vec2 a_tex_coord;
+        
+    """, vertex_300="""
+        v_tex_coord = a_tex_coord;
+        v_coord = u_drawable_size * vec2(gl_Position.x * .5 + .5, -gl_Position.y * .5 + .5);
+    """, fragment_300="""
+        #extension GL_EXT_gpu_shader4 : enable
+        #define PI2 6.28318530718
+        #define M1 1597334677U
+        #define M2 3812015801U
+
+        //determines blob shape
+        const float blurSize1 = 4.0;
+        const float blurSize2 = 20.0;
+        
+        //coordinates
+        vec2 uv = v_coord/u_drawable_size.xy;
+        vec2 uvR = (v_coord - .5 * u_drawable_size.xy)/u_drawable_size.y;
+        float aspect = u_drawable_size.x / u_drawable_size.y;
+        
+        //Fast Hash
+        //noise and audio data
+        vec2 q = vec2(v_coord*u_time);
+        q *= vec2(M1, M2); 
+        int n = (int(q.x) ^ int(q.y)) * M1;
+        vec2 hash_result = float(n) * (1.0/float(0xffffffffU));
+        
+        vec3 noise = vec3(1.0,1.0,1.0) * hash_result;
+        noise.r = clamp(noise.r, 0.0, 1.0);
+        float fft = 0.0//texture(iChannel1,vec2(length(uvR), 0.25)).r;
+        float wave = 0.0//texture(iChannel1, vec2(uv.x, 0.75)).r;
+        
+        //lookup uv
+        vec2 uv2 = (uv - 0.5);
+        uv2 *= 0.999 * (1.0+(length(uv2/2.0) /300.0));
+        uv2 *= 1.0 - (.03 * fft) * (0.5 + 0.25 * smoothstep(length(vec2(aspect,1.0)) / 2.0, 0.0, length(uvR)));
+        uv2.x += (.0001 + .002 * fft) * sin(wave + u_time + uv2.y*10.0);
+        uv2.y += (.0001 + .002 * fft) * cos(wave + u_time + uv2.x*10.0);
+        uv2 = uv2 + 0.5;
+        
+        //feedback
+        vec3 prev = texture(tex0, uv2).rgb;
+    
+        //dymamic blur
+        float vB = blurSize2 - (blurSize2 * (0.5 + 0.5 * sin(u_time)) - blurSize1 - 2.0); 
+        
+        //get two versions of blurred image
+        sampler2D channel = tex0;
+        vec2 blur_uv = uv2;
+        vec2 scale = vec2(blurSize1);
+        float step = blurSize1/4.0;
+        float result = 0.0;
+        int i=0;
+        vec2 d;
+        for(float y=-scale.y; y < scale.y; y+=step){
+            for(float x=-scale.x; x < scale.x; x+=step){
+                d = vec2(x, y);
+                result += texture(channel, blur_uv + (d / u_drawable_size.xy)).r*(1.0-smoothstep(0.0, scale.y*2.0,  length(d)));
+                i++;
+            }
+        }
+        vec3 blur1 = vec3(result / float(i));
+
+        //dymamic blur
+        float vB = blurSize2 - (blurSize2 * (0.5 + 0.5 * sin(u_time)) - blurSize1 - 2.0); 
+        
+        //get two versions of blurred image
+        sampler2D channel = tex0;
+        vec2 blur_uv = uv2;
+        vec2 scale = vec2(vB);
+        float step = (vB)/6.0);
+        float result = 0.0;
+        int i=0;
+        vec2 d;
+        for(float y=-scale.y; y < scale.y; y+=step){
+            for(float x=-scale.x; x < scale.x; x+=step){
+                d = vec2(x, y);
+                result += texture(channel, blur_uv + (d / u_drawable_size.xy)).r*(1.0-smoothstep(0.0, scale.y*2.0,  length(d)));
+                i++;
+            }
+        }
+        vec3 blur2 = vec3(result / float(i));
+        
+        //reaction diffusion
+        vec3 col = prev - (blur2 - blur1*0.999);
+
+        //seed with noise
+        //col -= (0.0 + 1.0*fft)/16.0;
+        col += (noise.r-0.5)/8.0;
+        
+        //prevent value runaway
+        col = clamp(col, 0.0, 1.0);
+
+        
+        // Output to screen
+        fragColor = vec4(col, 1.0);
+    """)
 ###
 #Some Shaders to look into:
 #SPECTRALIZER https://www.shadertoy.com/view/wXscWN

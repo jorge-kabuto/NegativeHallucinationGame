@@ -9,6 +9,12 @@ transform balatro:
     pause 1.0/60
     repeat
 
+transform reaction_diffusion:
+    shader "ReactionDiffusion2"
+    # tex0 ("dark_waters.png")
+    pause 1.0/60
+    repeat
+
 label start:
 
     # Show a background. This uses a placeholder by default, but you can
