@@ -22,6 +22,7 @@ label start:
     # images directory to show it.
     
     scene dark_waters at balatro
+    play sound beach_01
     # jump TwiceShadowedIntro
 
     # This shows a character sprite. A placeholder is used, but you can

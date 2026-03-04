@@ -1574,7 +1574,7 @@ style nvl_button_text:
     slow_abortable True
     first_indent 15
     rest_indent 15
-    kerning -1.5
+    # kerning -1.5
     italic True
     
     # adjust_spacing "vertical"

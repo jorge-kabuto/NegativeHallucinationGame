@@ -226,6 +226,7 @@ define dice_rolling = "audio/sfx_by_katy/dice_rolling.mp3"
 #Success and failure sfx are different in case you want them to be different sound files:
 define dice_success = "audio/sfx_by_katy/dice_result.mp3"
 define dice_failure = "audio/sfx_by_katy/dice_result.mp3"
+define beach_01 = "audio/245134__bpayri__porto-19-05-14-quiet-to-moderate-waves-on-sand-and-rock-beach.wav" 
 
 # sfx for button clicks:
 define click = "audio/sfx_by_katy/button_click.mp3"
