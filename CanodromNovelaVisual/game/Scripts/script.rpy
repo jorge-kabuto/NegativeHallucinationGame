@@ -1,4 +1,13 @@
 ﻿# The game starts here.
+transform gradient:
+    shader "example.gradient"
+    u_gradient_right (0.0, 0.0, 1.0, 1.0)
+    u_gradient_left (0.0, 0.0, 0.0, 1.0)
+
+transform balatro:
+    shader "balatro.test"
+    pause 1.0/60
+    repeat
 
 label start:
 
@@ -6,7 +15,7 @@ label start:
     # add a file (named either "bg room.png" or "bg room.jpg") to the
     # images directory to show it.
     
-    scene dark_waters
+    scene dark_waters at balatro
     # jump TwiceShadowedIntro
 
     # This shows a character sprite. A placeholder is used, but you can
@@ -26,9 +35,9 @@ label start:
     n "There's something you're forgetting."
     aaa"NEGATIVE HALLUCINATION"
     
+    jump ReflectionIntro
     jump ph_intro
     jump TwiceShadowedIntro
-    jump ReflectionIntro
 
 label ReflectionIntro:
 
