@@ -360,7 +360,7 @@ screen main_menu():
     ## This ensures that any other menu screen is replaced.
     tag menu
 
-    add gui.main_menu_background
+    add gui.main_menu_background at submerge_default
 
     ## This empty frame darkens the main menu.
     frame:
@@ -391,6 +391,7 @@ style main_menu_version is main_menu_text
 style main_menu_frame:
     xsize 420
     yfill True
+    xfill True
 
     background "gui/overlay/main_menu.png"
 
