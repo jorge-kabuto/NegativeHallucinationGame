@@ -21,46 +21,14 @@ transform balatro:
     pause 1.0/60
     repeat
 
-transform reaction_diffusion:
-    shader "ReactionDiffusion2"
-    pause 1.0/24
-    repeat
-
-init python:
-
-    class ReactionDiffusionBG(renpy.Displayable):
-
-        def __init__(self, child=None, **kwargs):
-            super(ReactionDiffusionBG, self).__init__(**kwargs)
-            self.buffer_a = None
-            self.tex = None
-
-        def render(self, width, height, st, at):
-
-            if self.buffer_a is None:
-                self.buffer_a = renpy.Render(width, height)
-            if self.tex is None:
-                self.tex = renpy.render_to_surface(self.buffer_a, resize=True)
-
-            self.buffer_a = renpy.Render(width, height)
-            self.buffer_a.blit(self.tex,(0,0))
-            self.buffer_a.add_shader("ReactionDiffusion2")
-            self.buffer_a.add_uniform("u_time", st)
-            self.buffer_a.add_uniform("u_drawable_size", (width, height))
-
-            renpy.redraw(self, 0)
-            self.tex = renpy.render_to_surface(self.buffer_a, resize=True)
-
-            return self.buffer_a
-
 label start:
 
     # Show a background. This uses a placeholder by default, but you can
     # add a file (named either "bg room.png" or "bg room.jpg") to the
     # images directory to show it.
-    scene expression ReactionDiffusionBG()
+    # scene expression ReactionDiffusion()
     # scene dark_waters at reaction_diffusion
-    # scene dark_waters at submerge_default
+    scene dark_waters at submerge_default
     play sound beach_01
     # jump TwiceShadowedIntro
 
@@ -109,6 +77,8 @@ label ReflectionIntro:
     return
 
 label TwiceShadowedIntro:
+
+    scene expression ReactionDiffusion(blur1=10.0,blur2=20.0)
 
     e"It's too late to turn back now. A feeling of doom creeps up your back, like a wounded cat."
     e"They approach, a mass of bound muscle in the shape of a headless Adonis."
