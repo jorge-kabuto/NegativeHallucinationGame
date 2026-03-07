@@ -402,7 +402,7 @@ define gui.nvl_text_xalign = 0.0
 ## nvl_narrator character.)
 define gui.nvl_thought_xpos = gui.x_pos #360
 define gui.nvl_thought_ypos = gui.y_pos
-define gui.nvl_thought_width = 850 # Narrowed width.#1170
+define gui.nvl_thought_width = 810 # Narrowed width.#1170
 define gui.nvl_thought_xalign = 0.0
 
 ## The position of nvl menu_buttons.
@@ -422,6 +422,7 @@ define gui.nvl_button_y_offset = 40
 define gui.nvl_button_offset_initial_fraction = 0.66
 
 define gui.nvl_anim_time = 0.5
+define gui.nvl_past_alpha = 1.0
 
 ## Localization ################################################################
 
@@ -495,6 +496,7 @@ init python:
 
         gui.nvl_button_width = 1860
         gui.nvl_button_xpos = 30
+
 
 ## Mouse Cursor #######################################
 

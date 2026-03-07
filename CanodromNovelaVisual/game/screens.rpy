@@ -360,7 +360,6 @@ screen main_menu():
     ## This ensures that any other menu screen is replaced.
     tag menu
 
-    add gui.main_menu_background at submerge_default
 
     ## This empty frame darkens the main menu.
     frame:
@@ -380,6 +379,7 @@ screen main_menu():
 
             #text "[config.version]":#Hides version from the main menu screen
                 #style "main_menu_version"
+    add gui.main_menu_background at submerge_default
 
 
 style main_menu_frame is empty
@@ -409,6 +409,10 @@ style main_menu_text:
 
 style main_menu_title:
     properties gui.text_properties("title")
+    size 150
+    textalign 0.5
+    color "#0000ffa2"
+    #outlines [ (absolute(20), "#0000ff50", absolute(10), absolute(15)) ]
 
 style main_menu_version:
     properties gui.text_properties("version")
@@ -1325,13 +1329,13 @@ style notify_text:
 
 #To have previous dialogue text fade a little:
 transform nvl_faded(v=0.0):
-    alpha (0.33 - ((v-1)*0.33) / 6.0)
+    alpha (gui.nvl_past_alpha - ((v-1)*gui.nvl_past_alpha) / 6.0)
     xoffset (150 * (v-1)) - 150
     yoffset gui.nvl_height + gui.nvl_spacing
     zoom (1.0 - (0.5*(max(v-2.0,0))) / 6.0)
 
     easeout gui.nvl_anim_time:
-        alpha (0.33 - (v*0.33) / 6.0)
+        alpha (gui.nvl_past_alpha - (v*gui.nvl_past_alpha) / 6.0)
         xoffset (150 * v) - 150
         yoffset 0
         zoom (1.0 - (0.5*max(v-1.0,0)) / 6.0)
@@ -1343,14 +1347,14 @@ transform nvl_fadin(v=0.0):
     zoom (1.0 - (0.5*(max(v-2.0,0))) / 6.0)
 
     easeout gui.nvl_anim_time:
-        alpha (0.33 - (v*0.33) / 6.0)
+        alpha (gui.nvl_past_alpha - (v*gui.nvl_past_alpha) / 6.0)
         xoffset (150 * v) - 150
         yoffset 0
         zoom (1.0 - (0.5*max(v-1.0,0)) / 6.0)
 
 transform nvl_bg_faded(v=0.0, total_offset=0.0):
 
-    alpha (0.33 - ((v-1)*0.33) / 6.0)
+    alpha (gui.nvl_past_alpha - ((v-1)*gui.nvl_past_alpha) / 6.0)
     xoffset (v-1)*150 - gui.nvl_text_width/2
     yoffset -280 - gui.nvl_height*(v-1)
     zoom (1.0 - (0.5*max(v-2,0)) / 6.0)
@@ -1358,7 +1362,7 @@ transform nvl_bg_faded(v=0.0, total_offset=0.0):
     xanchor 0.0
 
     easeout gui.nvl_anim_time:
-        alpha (0.33 - (v*0.33) / 6.0)
+        alpha (gui.nvl_past_alpha - (v*gui.nvl_past_alpha) / 6.0)
         xoffset v*150 - gui.nvl_text_width/2
         yoffset -280 - gui.nvl_height*v - total_offset*1.94
         zoom (1.0 - (0.5*max(v-1.0,0)) / 6.0)
@@ -1566,6 +1570,7 @@ style nvl_button:
 
 style nvl_button_text:
     properties gui.button_text_properties("nvl_button")
+    font "Fonts/PilcrowRounded-Variable.ttf"
     yanchor 0.5
     # xanchor 0.0
     textshader "typewriter"
@@ -1574,8 +1579,8 @@ style nvl_button_text:
     slow_cps_multiplier 1.0
     slow_abortable True
     first_indent 15
-    rest_indent 15
-    # kerning -1.5
+    rest_indent 50
+    kerning -2.0
     italic True
     
     # adjust_spacing "vertical"

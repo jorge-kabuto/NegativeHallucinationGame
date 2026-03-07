@@ -79,6 +79,27 @@ init python:
         gl_FragColor = vec4(texture2D(tex0,uv).rgb,1.0);
     """)
 
+    renpy.register_shader("CircleFilter", variables="""
+        uniform sampler2D tex0;
+        uniform vec2 u_drawable_size;
+        uniform vec2 u_center_percentage;
+        uniform float u_radius_percentage;
+        varying vec2 v_coord;
+    """,fragment_functions="""
+    vec4 circle(vec2 uv, vec2 pos, float rad, vec3 color) {
+        float d = length(pos - uv) - rad;
+        float t = clamp(d, 0.0, 500.0);
+        return vec4(color, 1.0 - t/500.0);
+    }
+    """,vertex_300="""
+        v_coord = u_drawable_size * vec2(gl_Position.x * .5 + .5, gl_Position.y * .5 + .5);
+    """,fragment_300="""
+        vec2 uv = v_coord/u_drawable_size.xy;
+        vec2 center = u_drawable_size.xy * u_center_percentage;
+        float radius = u_radius_percentage * u_drawable_size.y;
+        gl_FragColor = vec4(texture2D(tex0,uv).rgb,1.0);
+    """)
+
     
 
 ###

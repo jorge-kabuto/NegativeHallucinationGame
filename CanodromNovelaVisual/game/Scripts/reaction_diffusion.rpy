@@ -16,7 +16,7 @@ init python:
 
         def render(self, width, height, st, at):
             
-            ds = 1.0/4.0
+            ds = 1.0/2.0
             # eff_x = 400
             # eff_y = 400
 
@@ -96,8 +96,8 @@ init python:
         //noise and audio data
         vec3 noise = vec3(1.0,1.0,1.0) * hash(uint(v_coord.x*u_time),uint(v_coord.y*u_time));
         noise.r = clamp(noise.r, 0.0, 1.0);
-        float fft = 0.1;//texture2D(iChannel1,vec2(length(uvR), 0.25)).r;
-        float wave = 5.0;//texture2D(iChannel1, vec2(uv.x, 0.75)).r;
+        float fft = 0.0;//texture2D(iChannel1,vec2(length(uvR), 0.25)).r;
+        float wave = 0.0;//texture2D(iChannel1, vec2(uv.x, 0.75)).r;
         
         //lookup uv
         vec2 uv2 = (uv - 0.5);
@@ -126,7 +126,7 @@ init python:
         
         //prevent value runaway
         col = clamp(col, 0.0, 1.0);
-
+        col = vec3(col.r,0.05,0.05);
         
         // Output to screen
         gl_FragColor = vec4(col, 1.0);

@@ -121,5 +121,5 @@ init python:
             float spec = exp(dot(ref, sun) * 9.0 - 9.0);
             float fog = max(1.0 - mar.w/MAX, 0.0);
 
-            gl_FragColor = vec4(TINT * vec4(sqrt(spec) * fog).rgb, 1.0);
+            gl_FragColor = vec4(TINT * vec4(sqrt(spec) * fog).rgb, 0.0);
     """)
