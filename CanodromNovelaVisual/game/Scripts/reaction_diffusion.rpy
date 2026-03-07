@@ -3,40 +3,44 @@ transform reaction_diffusion:
     pause 1.0/24
     repeat
 
+define reacdiff_state = None
 init python:
+    from renpy.python import NoRollback
     config.use_cpickle = False
+
+    class ReactionState(NoRollback):
+        def __init__(self):
+            self.tex = None
+    if store.reacdiff_state is None:
+        store.reacdiff_state = ReactionState()
+
     class ReactionDiffusion(renpy.Displayable):
 
         def __init__(self, child=None, blur1=20.0,blur2=80.0, **kwargs):
             super(ReactionDiffusion, self).__init__(**kwargs)
-            self.buffer_a = None
-            self.tex = None
             self.blur1 = blur1
             self.blur2 = blur2
 
         def render(self, width, height, st, at):
             
             ds = 1.0/2.0
-            # eff_x = 400
-            # eff_y = 400
+            if reacdiff_state.tex is None:
+                reacdiff_state.tex = renpy.load_image("images/backgrounds/dark_waters.png")
 
-            if self.buffer_a is None:
-                self.buffer_a = renpy.Render(width*ds, height*ds)
-                # self.buffer_a = renpy.Render(eff_x, eff_y)
-            if self.tex is None:
-                self.tex = renpy.render_to_surface(self.buffer_a, resize=False)
+            buffer_a = renpy.Render(width*ds, height*ds)
+            buffer_a.blit(reacdiff_state.tex,(0,0))
+            buffer_a.add_shader("ReactionDiffusion2")
+            buffer_a.add_uniform("u_blur_1", self.blur1)
+            buffer_a.add_uniform("u_blur_2", self.blur2)
 
-            self.buffer_a = renpy.Render(width*ds, height*ds)
-            # self.buffer_a = renpy.Render(eff_x, eff_y)
-            self.buffer_a.blit(self.tex,(0,0))
-            self.buffer_a.add_shader("ReactionDiffusion2")
-            self.buffer_a.add_uniform("u_blur_1", self.blur1)
-            self.buffer_a.add_uniform("u_blur_2", self.blur2)
-
-            self.tex = renpy.render_to_surface(self.buffer_a, resize=False)
+            reacdiff_state.tex = renpy.render_to_surface(buffer_a, resize=False)
+            scaled_tex = renpy.display.scale.smoothscale(reacdiff_state.tex, (width, height))
             present = renpy.Render(width, height)
-            self.tex=renpy.display.scale.smoothscale(self.tex, (width, height))
-            present.blit(self.tex,(0,0))
+            present.add_shader("CircleFilter")
+            present.add_uniform("u_center_percentage", (0.25, 0.66))
+            present.add_uniform("u_radius_percentage", 0.4)
+            present.add_uniform("u_reverse", True)
+            present.blit(scaled_tex,(0,0))
             renpy.redraw(self, 0)
 
             return present

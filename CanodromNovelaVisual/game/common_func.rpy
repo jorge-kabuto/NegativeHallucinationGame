@@ -79,26 +79,66 @@ init python:
         gl_FragColor = vec4(texture2D(tex0,uv).rgb,1.0);
     """)
 
-    renpy.register_shader("CircleFilter", variables="""
-        uniform sampler2D tex0;
-        uniform vec2 u_drawable_size;
-        uniform vec2 u_center_percentage;
-        uniform float u_radius_percentage;
-        varying vec2 v_coord;
-    """,fragment_functions="""
-    vec4 circle(vec2 uv, vec2 pos, float rad, vec3 color) {
-        float d = length(pos - uv) - rad;
-        float t = clamp(d, 0.0, 500.0);
-        return vec4(color, 1.0 - t/500.0);
-    }
-    """,vertex_300="""
-        v_coord = u_drawable_size * vec2(gl_Position.x * .5 + .5, gl_Position.y * .5 + .5);
-    """,fragment_300="""
-        vec2 uv = v_coord/u_drawable_size.xy;
-        vec2 center = u_drawable_size.xy * u_center_percentage;
-        float radius = u_radius_percentage * u_drawable_size.y;
-        gl_FragColor = vec4(texture2D(tex0,uv).rgb,1.0);
-    """)
+    renpy.register_shader(
+        "CircleFilter",
+        variables="""
+            uniform sampler2D tex0;
+            uniform vec2 u_drawable_size;
+            uniform vec2 u_center_percentage;
+            uniform float u_radius_percentage;
+            uniform bool u_reverse;
+            varying vec2 v_coord;
+        """,
+
+        fragment_functions="""
+        float circle_mask(vec2 uv, vec2 center, float radius){
+            float d = distance(uv, center);
+            return step(d, radius);
+        }
+        float circle_mask_smooth(vec2 uv, vec2 center, float radius, vec2 tex_size){
+            // compute aspect ratio from texture
+            float aspect = tex_size.x / tex_size.y;
+
+            // center and compensate aspect
+            vec2 centered_uv = uv - center;
+            centered_uv.x *= aspect;
+
+            // distance in aspect-corrected space
+            float d = length(centered_uv);
+
+            // smooth edge
+            return smoothstep(radius, radius * 0.5, d);
+        }
+        """,
+
+        vertex_300="""
+            v_coord = vec2(gl_Position.x * .5 + .5, gl_Position.y * .5 + .5);
+        """,
+
+        fragment_300="""
+            #extension GL_EXT_gpu_shader4: enable
+            vec2 uv = v_coord;
+            vec2 texSize = vec2(textureSize2D(tex0, 0));
+
+            // center and radius in pixel space
+            vec2 center = u_center_percentage;
+            float radius = u_radius_percentage;
+
+            // shift UV toward center and scale
+            //  vec2 centered_uv = uv - center;
+            //  centered_uv /= 0.5;  // scale UVs inward
+            //  vec2 scaled_uv = center + centered_uv;
+
+            vec4 color = texture2D(tex0, uv);
+            float mask_factor = circle_mask_smooth(uv, center, radius, texSize);
+
+            if(u_reverse){
+                gl_FragColor = color * (1.0-mask_factor);
+            }else{
+                gl_FragColor = color * mask_factor;
+            }
+        """
+    )
 
     
 

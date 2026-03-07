@@ -21,6 +21,17 @@ transform balatro:
     pause 1.0/60
     repeat
 
+transform portrait:
+    # shader "CircleFilter"
+    # u_center_percentage (0.25,0.7)
+    # u_radius_percentage (0.075)
+    # u_reverse False
+    rotate 360
+    zoom 0.5
+    blur 10.0
+    alpha 0.66
+    xoffset 1920*0.08
+
 label start:
 
     # Show a background. This uses a placeholder by default, but you can
@@ -28,7 +39,8 @@ label start:
     # images directory to show it.
     # scene expression ReactionDiffusion()
     # scene dark_waters at reaction_diffusion
-    scene dark_waters at submerge_default
+    scene black
+    show dark_waters at submerge_default
     play sound beach_01
     # jump TwiceShadowedIntro
 
@@ -77,10 +89,12 @@ label ReflectionIntro:
     return
 
 label TwiceShadowedIntro:
+    default tw_bg = ReactionDiffusion(blur1=10.0,blur2=20.0)
+    scene black
+    show expression tw_bg
+    show twiceshadowed_pf at portrait
 
-    scene expression ReactionDiffusion(blur1=10.0,blur2=20.0)
-
-    e"It's too late to turn back now. A feeling of doom creeps up your back, like a wounded cat."
+    e"It's too late to turn back now. A feeling of doom creeps up your back, like a wounded up cat."
     e"They approach, a mass of bound muscle in the shape of a headless Adonis."
     e"Neck to toes are dark red, the deep vermillion you would find on a budding wound."
     e"Their skin is unsullied, and yet you feel very wrong, as if those muscles cage an evil that would swallow you whole."
