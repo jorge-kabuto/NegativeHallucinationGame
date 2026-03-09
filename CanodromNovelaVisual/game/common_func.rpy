@@ -1,6 +1,6 @@
 define prev_was_menu = False
 init python:
-
+    config.keymap["dismiss"].append("K_1")
     # renpy.exports.get_sdl_window_pointer()
 
     def color(what, color, character, *args, **kwargs):
@@ -46,7 +46,7 @@ init python:
         if renpy.last_say().what is not None and store.prev_was_menu:
             import re
             statement = re.sub("{color.*color}", "", store.last_choice_label)
-            renpy.exports.say(None, "{cps=0}{nw}{color=[youtext]}??? —\n" + statement + "{/color}{/cps}")
+            renpy.exports.say(None, "{cps=0}{color=[youtext]}??? —\n" + statement + "{/color}{/cps}", interact=False)
             store.prev_was_menu = False
 
         if renpy.last_say().what is not None and "menu-nvl" in name:
@@ -136,6 +136,56 @@ init python:
                 gl_FragColor = color * (1.0-mask_factor);
             }else{
                 gl_FragColor = color * mask_factor;
+            }
+        """
+    )
+
+    renpy.register_shader(
+        "SimpleOutline",
+        variables="""
+            uniform sampler2D tex0;
+            uniform vec2 u_drawable_size;
+            uniform float u_radius;
+            uniform vec3 u_outline_color;
+            uniform bool u_should_overlay;
+            varying vec2 v_coord;
+        """,
+        vertex_300="""
+            v_coord = vec2(gl_Position.x * .5 + .5, gl_Position.y * .5 + .5);
+            //v_coord = vec2(gl_Position.xy);
+        """,
+
+        fragment_300="""
+            #extension GL_EXT_gpu_shader4: enable
+            const vec3 target = vec3(0.0, 1.0, 0.0); // Find green
+            const float TAU = 6.28318530;
+            const float steps = 32.0;
+            
+            // vec2 otl_uv = v_coord * vec2(2.0,1.0) + vec2(0.1,0.0);
+            vec2 otl_uv = v_coord;
+            
+            // Correct aspect ratio
+            vec2 otl_aspect = 1.0 / vec2(textureSize2D(tex0, 0));
+            
+            vec4 final_color = vec4(0.0,0.0,0.0,1.0);
+            for (float i = 0.0; i < TAU; i += TAU / steps) {
+                // Sample image in a circular pattern
+                vec2 offset = vec2(sin(i), cos(i)) * otl_aspect * u_radius;
+                vec4 col = texture2D(tex0, otl_uv + offset);
+                
+                // Mix outline with background
+                float alpha = smoothstep(0.5, 0.7, distance(col.rgb, target));
+                final_color = mix(final_color, vec4(u_outline_color, 1.0), alpha);
+            }
+            
+            // Overlay original video
+            if(u_should_overlay){
+                vec4 mat = texture2D(tex0, otl_uv);
+                float factor = smoothstep(0.5, 0.7, distance(mat.rgb, target));
+                gl_FragColor = mix(final_color, mat, factor);
+            }else{
+                if(final_color == vec4(0.0,0.0,0.0,1.0)) discard;
+                gl_FragColor = final_color;
             }
         """
     )

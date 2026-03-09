@@ -11,6 +11,7 @@ init python:
     class ReactionState(NoRollback):
         def __init__(self):
             self.tex = None
+            self.pfp = None
     if store.reacdiff_state is None:
         store.reacdiff_state = ReactionState()
 
@@ -26,12 +27,23 @@ init python:
             ds = 1.0/2.0
             if reacdiff_state.tex is None:
                 reacdiff_state.tex = renpy.load_image("images/backgrounds/dark_waters.png")
+            if reacdiff_state.pfp is None:
+                reacdiff_state.pfp = renpy.load_image("images/twiceshadowed_pf_chroma.png")
 
             buffer_a = renpy.Render(width*ds, height*ds)
+
             buffer_a.blit(reacdiff_state.tex,(0,0))
             buffer_a.add_shader("ReactionDiffusion2")
             buffer_a.add_uniform("u_blur_1", self.blur1)
             buffer_a.add_uniform("u_blur_2", self.blur2)
+            
+            # buffer_a.blit(reacdiff_state.pfp,(0,0))
+            # buffer_a.add_shader("SimpleOutline")
+            # buffer_a.add_uniform("u_radius",10)
+            # buffer_a.add_uniform("u_outline_color",(1.0,0.0,0.0))
+            # buffer_a.add_uniform("u_should_overlay",False)
+
+
 
             reacdiff_state.tex = renpy.render_to_surface(buffer_a, resize=False)
             scaled_tex = renpy.display.scale.smoothscale(reacdiff_state.tex, (width, height))
@@ -40,6 +52,13 @@ init python:
             present.add_uniform("u_center_percentage", (0.25, 0.66))
             present.add_uniform("u_radius_percentage", 0.4)
             present.add_uniform("u_reverse", True)
+
+            # present.blit(reacdiff_state.pfp,(400,0))
+            # present.add_shader("SimpleOutline")
+            # present.add_uniform("u_radius",10)
+            # present.add_uniform("u_outline_color",(1.0,0.0,0.0))
+            # present.add_uniform("u_should_overlay",False)
+
             present.blit(scaled_tex,(0,0))
             renpy.redraw(self, 0)
 
@@ -47,7 +66,6 @@ init python:
 
     renpy.register_shader("ReactionDiffusion2", variables="""
         uniform sampler2D tex0;
-        uniform float u_time;
         uniform vec2 u_drawable_size;
         uniform float u_blur_1;
         uniform float u_blur_2;
@@ -57,6 +75,7 @@ init python:
         varying vec2 v_position;
 
         attribute vec4 a_position;
+        uniform float u_time;
         
     """, fragment_functions="""
         #extension GL_EXT_gpu_shader4 : enable
@@ -86,7 +105,9 @@ init python:
         }
 
     """,  vertex_300="""
-        v_coord = u_drawable_size * vec2(gl_Position.x * .5 + .5, -gl_Position.y * .5 + .5);
+        //v_tex_coord = a_tex_coord;
+        //v_coord = vec2(v_tex_coord.x,1.0-v_tex_coord.y) * u_drawable_size;
+        v_coord = u_drawable_size * vec2(gl_Position.x * 0.5 + 0.5, -gl_Position.y * 0.5 + 0.5);
         v_position = a_position.xy;
     """, fragment_300="""
 

@@ -26,11 +26,14 @@ transform portrait:
     # u_center_percentage (0.25,0.7)
     # u_radius_percentage (0.075)
     # u_reverse False
-    rotate 360
-    zoom 0.5
-    blur 10.0
-    alpha 0.66
-    xoffset 1920*0.08
+    shader "SimpleOutline"
+    u_radius 10
+    u_outline_color (1.0,0.0,0.0)
+    # rotate 360
+    # zoom 0.5
+    # blur 10.0
+    # alpha 0.66
+    # xoffset 1920*0.08
 
 label start:
 
@@ -60,6 +63,7 @@ label start:
     n "And yet you know: a gnawing in the world, black maggots festering on the blanched pourous stone."
     n "There's something you're forgetting."
     aaa"NEGATIVE HALLUCINATION"
+    nvl clear
     
     menu(nvl=True):
         aaa"~DEBUG MENU~"
@@ -92,7 +96,7 @@ label TwiceShadowedIntro:
     default tw_bg = ReactionDiffusion(blur1=10.0,blur2=20.0)
     scene black
     show expression tw_bg
-    show twiceshadowed_pf at portrait
+    # show twiceshadowed_pf_chroma at portrait
 
     e"It's too late to turn back now. A feeling of doom creeps up your back, like a wounded up cat."
     e"They approach, a mass of bound muscle in the shape of a headless Adonis."

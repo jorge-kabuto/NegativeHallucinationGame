@@ -406,6 +406,7 @@ style main_menu_vbox:
 
 style main_menu_text:
     properties gui.text_properties("main_menu", accent=True)
+    textshader "wave:5:1:8"
 
 style main_menu_title:
     properties gui.text_properties("title")
@@ -629,7 +630,7 @@ screen file_slots(title):
 
             ## This ensures the input will get the enter event before any of the
             ## buttons do.
-            order_reverse True
+            order_reverse False
 
             ## The page name, which can be edited by clicking on a button.
             button:
@@ -1372,6 +1373,11 @@ transform nvl_bg_menu(total_offset=0.0):
     easeout gui.nvl_anim_time:
         yoffset -gui.nvl_height+ 40 - total_offset*1.94
 
+screen typewriter_input():
+    key "mouseup_1" action Return(True)
+    key "K_SPACE" action Return(True)
+    key "1" action Return(True)
+    
 screen past_dialogue(dialogue, items=None):
     zorder 49
     if len(items) > 0:
@@ -1402,7 +1408,7 @@ screen past_dialogue(dialogue, items=None):
             spacing gui.nvl_spacing
             first_spacing gui.nvl_spacing
             xpos 100
-            order_reverse True
+            order_reverse False
 
         #Adding effect that fades past dialogue:
         # Display dialogue.
@@ -1422,7 +1428,11 @@ screen past_dialogue(dialogue, items=None):
 
 screen nvl(dialogue, items=None):
     zorder 50
-
+    if items:
+        for i in range(min(len(items), 9)):
+            key "K_%d" % (i+1) action items[i].action
+            key "K_KP%d" % (i+1) action items[i].action
+        
     use past_dialogue(dialogue=dialogue, items=items)
     if len(items) > 0:
         $ total_offset = -gui.nvl_button_y_size * 0.1 + 10
@@ -1451,7 +1461,7 @@ screen nvl(dialogue, items=None):
             spacing gui.nvl_spacing
             first_spacing gui.nvl_spacing
             xpos 100
-            order_reverse True
+            order_reverse False
 
         #Adding effect that fades past dialogue:
         # Display dialogue.
