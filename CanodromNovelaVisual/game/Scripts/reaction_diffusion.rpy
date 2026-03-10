@@ -31,27 +31,29 @@ init python:
                 reacdiff_state.pfp = renpy.load_image("images/twiceshadowed_pf_chroma.png")
 
             buffer_a = renpy.Render(width*ds, height*ds)
+            buffer_otl = renpy.Render(width*ds, height*ds)
 
-            buffer_a.blit(reacdiff_state.tex,(0,0))
+            buffer_otl.add_shader("SimpleOutline")
+            buffer_otl.blit(reacdiff_state.pfp,(0,0))
+            buffer_otl.add_uniform("u_radius",3)
+            buffer_otl.add_uniform("u_outline_color",(1.0,0.0,0.0))
+            buffer_otl.add_uniform("u_should_overlay",True)
+            buffer_otl.add_uniform("u_pixel_offset",(-0.2,-0.25))
+            buffer_otl.add_uniform("u_scale",(3.5,3.5))
+
             buffer_a.add_shader("ReactionDiffusion2")
+            buffer_a.blit(reacdiff_state.tex,(0,0))
+            buffer_a.blit(buffer_otl,(0,0))
             buffer_a.add_uniform("u_blur_1", self.blur1)
             buffer_a.add_uniform("u_blur_2", self.blur2)
             
-            # buffer_a.blit(reacdiff_state.pfp,(0,0))
-            # buffer_a.add_shader("SimpleOutline")
-            # buffer_a.add_uniform("u_radius",10)
-            # buffer_a.add_uniform("u_outline_color",(1.0,0.0,0.0))
-            # buffer_a.add_uniform("u_should_overlay",False)
-
-
-
             reacdiff_state.tex = renpy.render_to_surface(buffer_a, resize=False)
             scaled_tex = renpy.display.scale.smoothscale(reacdiff_state.tex, (width, height))
             present = renpy.Render(width, height)
             present.add_shader("CircleFilter")
-            present.add_uniform("u_center_percentage", (0.25, 0.66))
-            present.add_uniform("u_radius_percentage", 0.4)
-            present.add_uniform("u_reverse", True)
+            present.add_uniform("u_center_percentage", (0.30, 0.5))
+            present.add_uniform("u_radius_percentage", 0.55)
+            present.add_uniform("u_reverse", False)
 
             # present.blit(reacdiff_state.pfp,(400,0))
             # present.add_shader("SimpleOutline")
@@ -60,6 +62,7 @@ init python:
             # present.add_uniform("u_should_overlay",False)
 
             present.blit(scaled_tex,(0,0))
+            # present.blit(buffer_otl,(0,0))
             renpy.redraw(self, 0)
 
             return present

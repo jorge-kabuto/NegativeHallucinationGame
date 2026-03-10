@@ -1,4 +1,7 @@
 label ph_intro:
+    scene balatro at balatro
+
+    nvl clear
     aaa "You drop down. You fall for a long time, the light leaves the tunnel through a pinpoint in the periapsis of your vision"
     aaa "Sinking deep, no colour comes to meet you. Not like before, through the sea."
     aaa "You fall, and in your falling, water comes to meet you. It catches you as a mother embraces their child, gentle caress for those forlorn."
@@ -15,7 +18,7 @@ label ph_1:
         "Yours comes first.":
             ph "I.... Okay. I had a long time to give myself a shape. I am the Prophet."
             e "I must say, a little arrogant on your part."
-            ph "I am one that seeks the light and may bring it into the world, where other failed."
+            ph "I am one that seeks the light and may bring it into the world, where others failed."
             ph "Now I believe you owe me something."
             e "I don't have one. As of yet. Although after hearing yours, anything goes I guess."
             ph "One can only announce their names after being shapen by it. Most are chosen by others, mine is a rare case of isolation."
@@ -24,5 +27,11 @@ label ph_1:
             ph "Mock me all you want."
             jump ph_1
 
-        # "Or what? The worst you could do is give me evil eye.":
-        # "(Ignore him and explore around)":
+        "Or what? The worst you could do is give me evil eye.":
+            ph "Oh I could do much more than that. (A savage smirk is sketched on their face)"
+            aaa "They mean it. You suddenly feel a little unconfortable, like the temperature around you has risen."
+            e "We'll see about that..."
+            jump ph_1
+        "(Ignore him and explore around)":
+            aaa "You move away from the head. It still beckons you, between spurious coughing."
+            jump ph_1

@@ -348,6 +348,8 @@ style navigation_button:
 style navigation_button_text:
     properties gui.button_text_properties("navigation_button")
 
+transform menu_title_tr:
+    blur 12
 
 ## Main Menu screen ############################################################
 ##
@@ -374,7 +376,7 @@ screen main_menu():
         vbox:
             style "main_menu_vbox"
 
-            text "[config.name!t]":
+            text "[config.name!t]" at menu_title_tr:
                 style "main_menu_title"
 
             #text "[config.version]":#Hides version from the main menu screen
@@ -406,14 +408,14 @@ style main_menu_vbox:
 
 style main_menu_text:
     properties gui.text_properties("main_menu", accent=True)
-    textshader "wave:5:1:8"
+    textshader "wave:8:0.5:50"
 
 style main_menu_title:
     properties gui.text_properties("title")
     size 150
     textalign 0.5
     color "#0000ffa2"
-    #outlines [ (absolute(20), "#0000ff50", absolute(10), absolute(15)) ]
+    outlines [ (absolute(5), "#9000ffff", absolute(0), absolute(-15)) ]
 
 style main_menu_version:
     properties gui.text_properties("version")
@@ -1330,13 +1332,13 @@ style notify_text:
 
 #To have previous dialogue text fade a little:
 transform nvl_faded(v=0.0):
-    alpha (gui.nvl_past_alpha - ((v-1)*gui.nvl_past_alpha) / 6.0)
+    alpha (gui.nvl_past_alpha - ((v-1)*gui.nvl_past_alpha) / 7.0)
     xoffset (150 * (v-1)) - 150
     yoffset gui.nvl_height + gui.nvl_spacing
     zoom (1.0 - (0.5*(max(v-2.0,0))) / 6.0)
 
     easeout gui.nvl_anim_time:
-        alpha (gui.nvl_past_alpha - (v*gui.nvl_past_alpha) / 6.0)
+        alpha (gui.nvl_past_alpha - (v*gui.nvl_past_alpha) / 7.0)
         xoffset (150 * v) - 150
         yoffset 0
         zoom (1.0 - (0.5*max(v-1.0,0)) / 6.0)
@@ -1348,7 +1350,7 @@ transform nvl_fadin(v=0.0):
     zoom (1.0 - (0.5*(max(v-2.0,0))) / 6.0)
 
     easeout gui.nvl_anim_time:
-        alpha (gui.nvl_past_alpha - (v*gui.nvl_past_alpha) / 6.0)
+        alpha (gui.nvl_past_alpha - (v*gui.nvl_past_alpha) / 7.0)
         xoffset (150 * v) - 150
         yoffset 0
         zoom (1.0 - (0.5*max(v-1.0,0)) / 6.0)

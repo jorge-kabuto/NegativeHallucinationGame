@@ -52,7 +52,8 @@ init python:
 
     """, vertex_300="""
         v_tex_coord = a_tex_coord;
-        v_coord = u_drawable_size * vec2(gl_Position.x * .5 + .5, -gl_Position.y * .5 + .5);
+        //v_coord = u_drawable_size * vec2(gl_Position.x * .5 + .5, -gl_Position.y * .5 + .5);
+        v_coord = vec2(v_tex_coord.x,1.0-v_tex_coord.y) * u_drawable_size;
     """, fragment_300="""
         #define PI 3.14159265359
 

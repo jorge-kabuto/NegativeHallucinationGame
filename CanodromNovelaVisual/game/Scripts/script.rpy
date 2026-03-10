@@ -21,17 +21,17 @@ transform balatro:
     pause 1.0/60
     repeat
 
-transform portrait:
+# transform portrait:
     # shader "CircleFilter"
     # u_center_percentage (0.25,0.7)
     # u_radius_percentage (0.075)
     # u_reverse False
-    shader "SimpleOutline"
-    u_radius 10
-    u_outline_color (1.0,0.0,0.0)
+    # shader "SimpleOutline"
+    # u_radius 10
+    # u_outline_color (1.0,0.0,0.0)
     # rotate 360
     # zoom 0.5
-    # blur 10.0
+    # blur 0.0
     # alpha 0.66
     # xoffset 1920*0.08
 
@@ -98,7 +98,7 @@ label TwiceShadowedIntro:
     show expression tw_bg
     # show twiceshadowed_pf_chroma at portrait
 
-    e"It's too late to turn back now. A feeling of doom creeps up your back, like a wounded up cat."
+    e"It's too late to turn back now. A feeling of doom creeps up your back, like a wound cat."
     e"They approach, a mass of bound muscle in the shape of a headless Adonis."
     e"Neck to toes are dark red, the deep vermillion you would find on a budding wound."
     e"Their skin is unsullied, and yet you feel very wrong, as if those muscles cage an evil that would swallow you whole."

@@ -292,10 +292,10 @@ def display_menu(
 
     choices = []
 
+    import hashlib
     for i, text_tuple in enumerate(items):
         #Adding Numbered Choice to the Items
         temp_list = list(text_tuple)
-        # temp_list[2] = "{color=[youtext]}??? —" + temp_list[2].value + "{/color}{nw}"
         temp_list[0] = f"{{color=[textnorm]}}{i+1}. -{{/color}} " + temp_list[0]
         items[i] = tuple(temp_list)
 

@@ -36,10 +36,30 @@ init python:
         store.gui.nvl_anim_time = prev_anim_time
         func("{cps=0}"+what, *args, **kwargs)
     
-    # def get_default_textshader():
-    #     return "typewriter"
-    # config.default_textshader = "default"
-    # config.textshader_callbacks["default"] = get_default_textshader
+    import hashlib
+    prev_display_menu = renpy.display_menu
+    def mem_menu(items, *args, **kwargs):
+        hashes = []
+        hashes_input = []
+        for i, text_tuple in enumerate(items):
+            temp_list = list(text_tuple)
+            filename, line = renpy.get_filename_line()
+            hash_input = f"{filename}:{line}:{temp_list[0]}"
+            line_hash = hashlib.sha1(hash_input.encode("utf-8")).hexdigest()
+
+            hashes.append(line_hash)
+            hashes_input.append(hash_input)
+
+            if line_hash in renpy.store.line_dict:
+                temp_list = list(text_tuple)
+                temp_list[0] = "{color=#3d4634}" + temp_list[0] + "{/color}"
+                items[i] = tuple(temp_list)
+
+        menu_result =  prev_display_menu(items, *args, **kwargs)
+        renpy.store.line_dict[hashes[menu_result]] = hashes_input[menu_result]
+
+        return menu_result
+    renpy.display_menu = mem_menu
 
     def menu_prev_line(name):
 
@@ -112,7 +132,7 @@ init python:
         """,
 
         vertex_300="""
-            v_coord = vec2(gl_Position.x * .5 + .5, gl_Position.y * .5 + .5);
+            v_coord = vec2(gl_Position.x * .5 + .5, 1.0-(gl_Position.y * .5 + .5));
         """,
 
         fragment_300="""
@@ -148,11 +168,18 @@ init python:
             uniform float u_radius;
             uniform vec3 u_outline_color;
             uniform bool u_should_overlay;
+            uniform vec2 u_scale;
+            uniform vec2 u_pixel_offset;
+            
             varying vec2 v_coord;
+            
+            attribute vec2 a_tex_coord;
         """,
         vertex_300="""
             v_coord = vec2(gl_Position.x * .5 + .5, gl_Position.y * .5 + .5);
             //v_coord = vec2(gl_Position.xy);
+            //v_coord = vec2(a_tex_coord.x,1.0-a_tex_coord.y) * u_drawable_size;
+            v_coord = vec2(a_tex_coord.x, (a_tex_coord.y*2.0));
         """,
 
         fragment_300="""
@@ -161,17 +188,25 @@ init python:
             const float TAU = 6.28318530;
             const float steps = 32.0;
             
-            // vec2 otl_uv = v_coord * vec2(2.0,1.0) + vec2(0.1,0.0);
-            vec2 otl_uv = v_coord;
+            vec2 otl_aspect = 1.0 / vec2(textureSize2D(tex0, 0));
+            vec2 screen_scale = u_drawable_size / textureSize2D(tex0, 0);
+
+            vec2 center = u_pixel_offset;
+            vec2 otl_uv = ((v_coord-center) * screen_scale)/u_scale + center;
+            vec2 clamped_uv = clamp(otl_uv, 0.0, 1.0);
+
+            if(otl_uv.x < 0.0 || otl_uv.x > 1.0) discard;
+            if(otl_uv.y < 0.0 || otl_uv.y > 1.0) discard;
             
             // Correct aspect ratio
-            vec2 otl_aspect = 1.0 / vec2(textureSize2D(tex0, 0));
             
             vec4 final_color = vec4(0.0,0.0,0.0,1.0);
             for (float i = 0.0; i < TAU; i += TAU / steps) {
                 // Sample image in a circular pattern
                 vec2 offset = vec2(sin(i), cos(i)) * otl_aspect * u_radius;
-                vec4 col = texture2D(tex0, otl_uv + offset);
+                vec4 col = texture2D(tex0, clamped_uv + offset);
+                float mask = step(length(otl_uv - clamped_uv), 0.00001);
+                col *= mask;
                 
                 // Mix outline with background
                 float alpha = smoothstep(0.5, 0.7, distance(col.rgb, target));
@@ -180,13 +215,17 @@ init python:
             
             // Overlay original video
             if(u_should_overlay){
-                vec4 mat = texture2D(tex0, otl_uv);
+                vec4 mat = texture2D(tex0, clamped_uv);
+                float mask = step(length(otl_uv - clamped_uv), 0.00001);
+                mat *= mask;
                 float factor = smoothstep(0.5, 0.7, distance(mat.rgb, target));
+                if(final_color.rgb == vec3(0.0)) discard;
                 gl_FragColor = mix(final_color, mat, factor);
             }else{
-                if(final_color == vec4(0.0,0.0,0.0,1.0)) discard;
+                if(final_color.rgb == vec3(0.0)) discard;
                 gl_FragColor = final_color;
             }
+            //gl_FragColor = vec4(v_coord.x, v_coord.y, 0.0, 1.0);
         """
     )
 

@@ -43,7 +43,7 @@
 # The language of the entries in nvl_list. If the language changes, this
 # is updated and the list is reset.
 default _nvl_language = None
-
+default line_dict = {}
 init -1500 python:
 
     # Styles that are used by nvl mode.
