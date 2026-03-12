@@ -5,6 +5,7 @@ transform gradient:
     u_gradient_left (0.0, 0.0, 0.0, 1.0)
 
 transform balatro:
+    mesh True
     shader "balatro"
     u_color_1 (0.82, 0, 0.18, 1.0)
     u_color_2 (0.391, 0.017, 0.592, 1.0)
@@ -20,6 +21,8 @@ transform balatro:
     u_spin_ease 1.1
     pause 1.0/60
     repeat
+
+define slowfade = Fade(1.0, 0.0, 3.0)
 
 # transform portrait:
     # shader "CircleFilter"
@@ -44,6 +47,7 @@ label start:
     # scene dark_waters at reaction_diffusion
     scene black
     show dark_waters at submerge_default
+    with slowfade
     play sound beach_01
     # jump TwiceShadowedIntro
 
@@ -96,8 +100,10 @@ label TwiceShadowedIntro:
     default tw_bg = ReactionDiffusion(blur1=10.0,blur2=20.0)
     scene black
     show expression tw_bg
+    with slowfade
     # show twiceshadowed_pf_chroma at portrait
 
+    nvl clear
     e"It's too late to turn back now. A feeling of doom creeps up your back, like a wound cat."
     e"They approach, a mass of bound muscle in the shape of a headless Adonis."
     e"Neck to toes are dark red, the deep vermillion you would find on a budding wound."

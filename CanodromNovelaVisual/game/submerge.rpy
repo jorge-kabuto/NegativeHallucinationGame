@@ -2,8 +2,8 @@ transform submerge_default:
     shader "submerge"
     # matrixcolor SaturationMatrix(0.1)
     # matrixcolor TintMatrix("#f00")
-    # pause 1.0/1 #Divide by desired framerate
-    # repeat
+    pause 1.0/60 #Divide by desired framerate
+    repeat
 
 # Created by Xor at https://www.shadertoy.com/view/NdBBzm
 init python:

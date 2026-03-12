@@ -24,7 +24,7 @@ init python:
 
         def render(self, width, height, st, at):
             
-            ds = 1.0/2.0
+            ds = 1.0/3.0
             if reacdiff_state.tex is None:
                 reacdiff_state.tex = renpy.load_image("images/backgrounds/dark_waters.png")
             if reacdiff_state.pfp is None:
@@ -38,8 +38,9 @@ init python:
             buffer_otl.add_uniform("u_radius",3)
             buffer_otl.add_uniform("u_outline_color",(1.0,0.0,0.0))
             buffer_otl.add_uniform("u_should_overlay",True)
-            buffer_otl.add_uniform("u_pixel_offset",(-0.2,-0.25))
-            buffer_otl.add_uniform("u_scale",(3.5,3.5))
+            buffer_otl.add_uniform("u_pixel_offset",(-0.2,0.0))
+            # buffer_otl.add_uniform("u_scale",(3.5,3.5))
+            buffer_otl.add_uniform("u_scale",(1.0,1.0))
 
             buffer_a.add_shader("ReactionDiffusion2")
             buffer_a.blit(reacdiff_state.tex,(0,0))

@@ -133,6 +133,7 @@ init python:
 
         vertex_300="""
             v_coord = vec2(gl_Position.x * .5 + .5, 1.0-(gl_Position.y * .5 + .5));
+            v_coord = vec2(a_tex_coord.x, (a_tex_coord.y*1.0));
         """,
 
         fragment_300="""
