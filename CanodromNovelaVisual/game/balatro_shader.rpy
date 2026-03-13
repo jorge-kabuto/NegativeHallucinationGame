@@ -90,5 +90,5 @@ init python:
         float c2p = max(0.,1. - contrast_mod*abs(paint_res));
         float c3p = 1. - min(1., c1p + c2p);
         float light = (u_lighting - 0.2)*max(c1p*5. - 4., 0.) + u_lighting*max(c2p*5. - 4., 0.);
-        gl_FragColor = (0.3/u_contrast)*u_color_1 + (1. - 0.3/u_contrast)*(u_color_1*c1p + u_color_2*c2p + vec4(c3p*u_color_3.rgb, c3p*u_color_1.a)) + light;
+        gl_FragColor = (0.3/u_contrast)*u_color_1 + (1. - 0.3/u_contrast)*(u_color_1*c1p + u_color_2*c2p + vec4(c3p*u_color_3.rgb, 1.0)) + light;
     """)

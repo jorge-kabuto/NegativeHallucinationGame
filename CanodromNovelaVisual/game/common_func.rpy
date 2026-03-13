@@ -1,5 +1,5 @@
 define prev_was_menu = False
-init python:
+init -5 python:
     config.keymap["dismiss"].append("K_1")
     # renpy.exports.get_sdl_window_pointer()
 
@@ -177,10 +177,7 @@ init python:
             attribute vec2 a_tex_coord;
         """,
         vertex_300="""
-            v_coord = vec2(gl_Position.x * .5 + .5, gl_Position.y * .5 + .5);
-            //v_coord = vec2(gl_Position.xy);
-            //v_coord = vec2(a_tex_coord.x,1.0-a_tex_coord.y) * u_drawable_size;
-            v_coord = vec2(a_tex_coord.x, (a_tex_coord.y*2.0));
+            v_coord = vec2(a_tex_coord.x, (a_tex_coord.y));
         """,
 
         fragment_300="""
@@ -191,9 +188,10 @@ init python:
             
             vec2 otl_aspect = 1.0 / vec2(textureSize2D(tex0, 0));
             vec2 screen_scale = u_drawable_size / textureSize2D(tex0, 0);
+            float unit_scale = max(screen_scale.x,screen_scale.y);
 
             vec2 center = u_pixel_offset;
-            vec2 otl_uv = ((v_coord-center) * screen_scale)/u_scale + center;
+            vec2 otl_uv = ((v_coord-center)/2.5)/u_scale + center;
             vec2 clamped_uv = clamp(otl_uv, 0.0, 1.0);
 
             if(otl_uv.x < 0.0 || otl_uv.x > 1.0) discard;
@@ -230,8 +228,101 @@ init python:
         """
     )
 
-    
+    renpy.register_shader(
+        "Tunnel",
+        variables="""
+            uniform sampler2D tex0;
+            uniform vec2 u_drawable_size;
+            uniform float u_time;
+            uniform float u_speed_scale;
 
+            varying vec2 v_coord;
+            
+            attribute vec2 a_tex_coord;
+        """,vertex_300="""
+            v_coord = gl_Position.xy;
+            v_coord = vec2(a_tex_coord.x-0.2, (a_tex_coord.y-0.3));
+        """,fragment_300="""
+            vec2 p = v_coord;
+            gl_FragColor.w = length(p);
+            if (gl_FragColor.w < 0.15) discard;
+            vec2 tuv = vec2(atan(p.y,p.x), .2/gl_FragColor.w)+u_time*u_speed_scale ;
+            tuv = vec2(mod(tuv.x,1.0),mod(tuv.y,1.0));
+            gl_FragColor = texture2D(tex0, tuv) * (gl_FragColor.w*2.0);
+        """,
+    )
+
+    store.bg_states = {}
+    class UniformTween(object):
+        """
+        Tween for arbitrary dict-like uniform sets, used for shader input interpolation.
+        Keys are strings; values can be numbers, tuples of numbers, or bools.
+        """
+
+        def _clamp01(self, x):
+            if x <= 0.0:
+                return 0.0
+            if x >= 1.0:
+                return 1.0
+            return x
+
+        def _smoothstep(self, t):
+            # Hermite smoothstep: 3t^2 - 2t^3
+            return t * t * (3.0 - 2.0 * t)
+
+        def _lerp(self, a, b, t):
+            # Supports numbers and tuples/lists of numbers. Falls back to step for bools/others.
+            if isinstance(a, (int, float)) and isinstance(b, (int, float)):
+                return a + (b - a) * t
+            if isinstance(a, (tuple, list)) and isinstance(b, (tuple, list)) and len(a) == len(b):
+                return tuple(self._lerp(a[i], b[i], t) for i in range(len(a)))
+            if isinstance(a, bool) and isinstance(b, bool):
+                return a if t < 0.5 else b
+            return a if t < 0.5 else b
+
+        def __init__(self, initial_values):
+            self.current = dict(initial_values)
+            self._from = dict(initial_values)
+            self._to = dict(initial_values)
+            self._start_st = 0.0
+            self._duration = 0.0
+            self._use_smoothstep = True
+            self._last_st = 0.0
+
+        def start(self, target_values, start_st, duration, use_smoothstep):
+            """
+            Begin a tween toward target_values from the current state.
+            """
+            self._from = dict(self.current)
+            self._to = dict(target_values)
+            self._start_st = float(start_st or 0.0)
+            self._duration = float(duration or 0.0)
+            self._use_smoothstep = bool(use_smoothstep)
+
+        def advance(self, st):
+            """
+            Advance this tween channel to time st and return the current values dict.
+            """
+            self._last_st = st
+
+            dur = self._duration or 0.0
+            if dur <= 0.0:
+                self.current = dict(self._to)
+                return self.current
+
+            t = self._clamp01((st - self._start_st) / dur)
+            if self._use_smoothstep:
+                t = self._smoothstep(t)
+
+            out = {}
+            keys = set(self._from.keys()) | set(self._to.keys())
+            for k in keys:
+                a = self._from.get(k, self._to.get(k))
+                b = self._to.get(k, a)
+                out[k] =self._lerp(a, b, t)
+
+            self.current = out
+            return out
 ###
 #Some Shaders to look into:
 #SPECTRALIZER https://www.shadertoy.com/view/wXscWN
