@@ -160,3 +160,6 @@ cython_debug/
 #.idea/
 *.txt
 *.rpyc
+*.rpymc
+
+NEGATIVE_HALLUCINATION-1.2-dists/
