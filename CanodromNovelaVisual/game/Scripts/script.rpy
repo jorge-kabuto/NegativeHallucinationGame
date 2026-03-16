@@ -58,13 +58,31 @@ label start:
     n "Primordial blackness envelops you. Time itself is opaque to your senses."
     n "Provided that you still have those. Or that you ever possesed them to begin with."
     n "Reality is inky, flowing, a secret river causing downpour on a lightless cave."
-    n "A few rules still seem to apply, strange and bent as they are, like a backwards elbow."
+    n "A few rules still seem to apply, strange and bent, like a backwards elbow, a flower closing into a golden seed."
     n "The cave, your gut tells, has a shape."
-    n "Countours are imagined and projected: a limit on the dark, something to sustain and contain it."
+    
+label intro_menu_01:
+    menu(nvl=True):
+        n "You have some time to reflect."
+        "Let me rest. There is nothing for us out there, nothing I haven't seen already.":
+            n "A self conjured mantle comes over you, white blindfold over unsharpened blades. If you had had any senses, you guard against them with all your meager might."
+            n "Still, the current is strong. You feel the movement, a holistic sense of pathos. The density is different for you and your environment."
+            n "A great fear cuts through your mind: there is no going back."
+        "Where is this current? It feels like I'm going in circles, like the center of a whirlpool.":
+            n "Prescience awakened by curiosity, you notice the current swirling. It feels faster on your right side, pulling you down and eastwards..."
+            n "A shadow of a colour. A deep purple, the color of imminent dawn."
+            n "You're moving towards sunrise."
+        "No --nonononono. I should be somewhere, sometime... This isn't right.":
+            n "The desperation claws at your mind. You flail, spasms of primal fear."
+            n "The current seems to... accelerate, responding to you as a foreign body."
+            n "You no longer belong here, and long to escape."
+
+    n "Your mind plays a non-consensual trick -- countours are imagined and projected: a limit on the dark, something to both sustain and contain it."
     n "The deepest of azures fills you now. There's a top and a bottom, dissonance emerging."
     n "You wander upwards, buoyant despite never having drawn breath."
     n "The dark expells you, now differentiated. Lines drawn in the sand, turn to marble."
-    n "And yet you know: a gnawing in the world, black maggots festering on the blanched pourous stone."
+    n "There's shimmering at the surface, dancing lights at the change of mediums."
+    n "And yet you know: a gnawing in the world, black maggots festering on the blanched porous stone."
     n "There's something you're forgetting."
     aaa"NEGATIVE HALLUCINATION"
     nvl clear
@@ -77,21 +95,3 @@ label start:
             jump TwiceShadowedIntro
         "ReflectionIntro":
             jump ReflectionIntro
-        "ReflectionIntro":
-            jump ReflectionIntro
-        "ReflectionIntro":
-            jump ReflectionIntro
-
-label ReflectionIntro:
-
-    e"Slowly, circumspect neural pathways activate. Your body comes to be."
-    e"Being is pretty rough."
-    e"You caught violently, your chest jumpstarting a tingling akin to burning."
-    e"Your eyes open, searing wounds in your face."
-    e"An enourmous blotch of azure fills your view, although not as dark as before."
-    e"Catching its shape, you see sharp edges, a perfect prism reflecting potent sunlight."
-
-    show eileen happy
-
-    e"It sits silently. Or rather floats, above coarse and humid sand."
-    return

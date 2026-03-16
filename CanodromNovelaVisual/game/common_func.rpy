@@ -1,3 +1,8 @@
+transform default_bg(framerate=60.0):
+    mesh True
+    pause 1.0/framerate
+    repeat
+
 define prev_was_menu = False
 init -5 python:
     config.keymap["dismiss"].append("K_1")

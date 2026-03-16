@@ -123,11 +123,6 @@ init python:
 
             return present
 
-transform default_bg(framerate=60.0):
-    mesh True
-    pause 1.0/framerate
-    repeat
-
 label ph_intro:
     default ph_bg = PhBackground(image_path="images/prophets_head_pf_chroma.png")
     scene black
@@ -141,7 +136,7 @@ label ph_intro:
     aaa "Your speed amerionates, and another layer, more solid, grounds you."
     aaa "Here, there is light, coming from above as if the scorching desert was only a few inches away."
     aaa "The walls are luminous reflection, the air rather damp."
-    aaa "There, in the wall, a disembodied head. Its gaze, two trembling moons of green, indicates that they are, against all odds, alive."
+    aaa "There, against the wall, a disembodied head. Its gaze, two trembling moons of green, indicates that they are, against all odds, alive."
     ph ".................."
     ph "You shouldn't have come."
     $ ph_set_balatro_preset("default", 10.0)
