@@ -108,6 +108,7 @@ init -5 python:
         "CircleFilter",
         variables="""
             uniform sampler2D tex0;
+            uniform vec2 u_tex0_size;
             uniform vec2 u_drawable_size;
             uniform vec2 u_center_percentage;
             uniform float u_radius_percentage;
@@ -142,9 +143,10 @@ init -5 python:
         """,
 
         fragment_300="""
-            #extension GL_EXT_gpu_shader4: enable
+            //#extension GL_EXT_gpu_shader4: enable
             vec2 uv = v_coord;
-            vec2 texSize = vec2(textureSize2D(tex0, 0));
+            //vec2 texSize = vec2(textureSize2D(tex0, 0));
+            vec2 texSize = u_tex0_size;
 
             // center and radius in pixel space
             vec2 center = u_center_percentage;
@@ -170,6 +172,7 @@ init -5 python:
         "SimpleOutline",
         variables="""
             uniform sampler2D tex0;
+            uniform vec2 u_tex0_size;
             uniform vec2 u_drawable_size;
             uniform float u_radius;
             uniform vec3 u_outline_color;
@@ -186,13 +189,15 @@ init -5 python:
         """,
 
         fragment_300="""
-            #extension GL_EXT_gpu_shader4: enable
+            //#extension GL_EXT_gpu_shader4: enable
             const vec3 target = vec3(0.0, 1.0, 0.0); // Find green
             const float TAU = 6.28318530;
             const float steps = 32.0;
             
-            vec2 otl_aspect = 1.0 / vec2(textureSize2D(tex0, 0));
-            vec2 screen_scale = u_drawable_size / textureSize2D(tex0, 0);
+            //vec2 otl_aspect = 1.0 / vec2(textureSize2D(tex0, 0));
+            vec2 otl_aspect = 1.0 / vec2(1000.0,1000.0);
+            //vec2 screen_scale = u_drawable_size / textureSize2D(tex0, 0);
+            vec2 screen_scale = u_drawable_size / vec2(1000.0,1000.0);
             float unit_scale = max(screen_scale.x,screen_scale.y);
 
             vec2 center = u_pixel_offset;
@@ -246,14 +251,14 @@ init -5 python:
             attribute vec2 a_tex_coord;
         """,vertex_300="""
             v_coord = gl_Position.xy;
-            v_coord = vec2(a_tex_coord.x-0.2, (a_tex_coord.y-0.3));
+            v_coord = vec2(a_tex_coord.x-0.2, (a_tex_coord.y-0.2));
         """,fragment_300="""
             vec2 p = v_coord;
             gl_FragColor.w = length(p);
-            if (gl_FragColor.w < 0.15) discard;
+            if (gl_FragColor.w < 0.2) discard;
             vec2 tuv = vec2(atan(p.y,p.x), .2/gl_FragColor.w)+u_time*u_speed_scale ;
-            tuv = vec2(mod(tuv.x,1.0),mod(tuv.y,1.0));
-            gl_FragColor = texture2D(tex0, tuv) * (gl_FragColor.w*2.0);
+            tuv = vec2(mod(tuv.x/3.14,1.0),mod(tuv.y/2.0,1.0));
+            gl_FragColor = texture2D(tex0, tuv) * (gl_FragColor.w*8.0);
         """,
     )
 
@@ -335,5 +340,10 @@ init -5 python:
 #reaction diffusion https://www.shadertoy.com/view/ctfGDl
 #rythmic fluid https://www.shadertoy.com/view/XsyfDm
 # Satin Flow https://www.shadertoy.com/view/Mstczn
-# Submerge https://www.shadertoy.com/view/NdBBzm
+# Submerge https://www.shadertoy.com/view/NdBBzm -- There are more submerge versions!!
+# Fluorescent https://www.shadertoy.com/view/WcGGDd
+# Paradise 3 https://www.shadertoy.com/view/WcsyDM
+# Light Rays https://www.shadertoy.com/view/lljGDt
+# Bubbles https://www.shadertoy.com/view/4dl3zn
+# Desert Sand https://www.shadertoy.com/view/WdjXRR
 ###

@@ -77,7 +77,7 @@ label intro_menu_01:
             n "The current seems to... accelerate, responding to you as a foreign body."
             n "You no longer belong here, and long to escape."
 
-    n "Your mind plays a non-consensual trick -- countours are imagined and projected: a limit on the dark, something to both sustain and contain it."
+    n "Countours are imagined and projected: a limit on the dark, something to both sustain and contain it."
     n "The deepest of azures fills you now. There's a top and a bottom, dissonance emerging."
     n "You wander upwards, buoyant despite never having drawn breath."
     n "The dark expells you, now differentiated. Lines drawn in the sand, turn to marble."
@@ -86,12 +86,13 @@ label intro_menu_01:
     n "There's something you're forgetting."
     aaa"NEGATIVE HALLUCINATION"
     nvl clear
-    
+
+label DEBUG_MENU:
     menu(nvl=True):
         aaa"~DEBUG MENU~"
-        "ph_intro":
-            jump ph_intro
-        "TwiceShadowedIntro":
-            jump TwiceShadowedIntro
-        "ReflectionIntro":
+        "The Reflection Intro":
             jump ReflectionIntro
+        "Twice Shadowed Intro":
+            jump TwiceShadowedIntro
+        "Prophet's Head Intro":
+            jump ph_intro

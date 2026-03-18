@@ -15,6 +15,11 @@
 define config.name = _("NEGATIVE HALLUCINATION")
 define config.history_length = 250
 
+define config.screen_width = 1920
+define config.screen_height = 1080
+define config.physical_width = 1920
+define config.physical_height = 1080
+
 
 ## Determines if the title given above is shown on the main menu screen. Set
 ## this to False to hide the title.

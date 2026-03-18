@@ -36,6 +36,7 @@ init python:
 
             buffer_otl.add_shader("SimpleOutline")
             buffer_otl.blit(reacdiff_state.pfp,(0,0))
+            buffer_otl.add_uniform("u_tex0_size", (width*ds, height*ds))
             buffer_otl.add_uniform("u_radius",3)
             buffer_otl.add_uniform("u_outline_color",(1.0,0.0,0.0))
             buffer_otl.add_uniform("u_should_overlay",True)
@@ -53,6 +54,7 @@ init python:
             scaled_tex = renpy.display.scale.smoothscale(reacdiff_state.tex, (width, height))
             present = renpy.Render(width, height)
             present.add_shader("CircleFilter")
+            present.add_uniform("u_tex0_size", (width, height))
             present.add_uniform("u_center_percentage", (0.30, 0.5))
             present.add_uniform("u_radius_percentage", 0.55)
             present.add_uniform("u_reverse", False)
@@ -83,30 +85,56 @@ init python:
         uniform float u_time;
         
     """, fragment_functions="""
-        #extension GL_EXT_gpu_shader4 : enable
-        #define M1 1597334677U
-        #define M2 3812015801U
+        //#extension GL_EXT_gpu_shader4 : enable
+        #define M1 1597334677
+        #define M2 3812015801
         //monochrome fast blur
+        //float monoBlur(sampler2D channel, vec2 uv, vec2 scale, float step){
+        //    float result = 0.0;
+        //    int i=0;
+        //    vec2 d;
+        //    for(float y=-scale.y; y < scale.y; y+=step){
+        //    for(float x=-scale.x; x < scale.x; x+=step){
+        //        d = vec2(x, y);
+        //        result += texture2D(channel, uv + (d / u_drawable_size.xy)).r*(1.0-smoothstep(0.0, scale.y*2.0,  length(d)));
+        //        i++;
+        //    }}
+        //    return result / float(i);
+        //}
+        #define BLUR_MAX_RADIUS 8
         float monoBlur(sampler2D channel, vec2 uv, vec2 scale, float step){
-            float result = 0.0;
-            int i=0;
-            vec2 d;
-            for(float y=-scale.y; y < scale.y; y+=step){
-            for(float x=-scale.x; x < scale.x; x+=step){
-                d = vec2(x, y);
-                result += texture2D(channel, uv + (d / u_drawable_size.xy)).r*(1.0-smoothstep(0.0, scale.y*2.0,  length(d)));
 
-                i++;
-            }}
-            return result / float(i);
+            float result = 0.0;
+            float count = 0.0;
+
+            for(int y = -BLUR_MAX_RADIUS; y <= BLUR_MAX_RADIUS; y++){
+                for(int x = -BLUR_MAX_RADIUS; x <= BLUR_MAX_RADIUS; x++){
+
+                    vec2 d = vec2(float(x), float(y)) * step;
+
+                    // Respect the original scale limits
+                    if(abs(d.x) > scale.x || abs(d.y) > scale.y)
+                        continue;
+
+                    float w = 1.0 - smoothstep(0.0, scale.y * 2.0, length(d));
+
+                    result += texture2D(channel, uv + (d / u_drawable_size.xy)).r * w;
+                    count += w;
+                }
+            }
+
+            return result / max(count, 0.0001);
         }
 
         //Fast Hash
-        float hash(uint q_x, uint q_y ){
-            q_x *= M1;
-            q_y *= M2;
-            uint n = (q_x ^ q_y) * M1;
-            return float(n) * (1.0/float(0xffffffffU));
+        //float hash(int q_x, int q_y ){
+        //    q_x *= M1;
+        //    q_y *= M2;
+        //    int n = (q_x ^ q_y) * M1;
+        //    return float(n) * (1.0/float(0xffffffff));
+        //}
+        float hash(int q_x, int q_y){
+            return fract(sin(float(q_x)*127.1 + float(q_y)*311.7) * 43758.5453);
         }
 
     """,  vertex_300="""
@@ -124,7 +152,7 @@ init python:
         float aspect = u_drawable_size.x / u_drawable_size.y;
         
         //noise and audio data
-        vec3 noise = vec3(1.0,1.0,1.0) * hash(uint(v_coord.x*u_time),uint(v_coord.y*u_time));
+        vec3 noise = vec3(1.0,1.0,1.0) * hash(int(v_coord.x*u_time),int(v_coord.y*u_time));
         noise.r = clamp(noise.r, 0.0, 1.0);
         float fft = 0.0;//texture2D(iChannel1,vec2(length(uvR), 0.25)).r;
         float wave = 0.0;//texture2D(iChannel1, vec2(uv.x, 0.75)).r;

@@ -349,7 +349,7 @@ style navigation_button_text:
     properties gui.button_text_properties("navigation_button")
 
 transform menu_title_tr:
-    blur 12
+    blur 8
 
 ## Main Menu screen ############################################################
 ##

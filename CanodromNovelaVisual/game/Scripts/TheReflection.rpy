@@ -25,6 +25,7 @@ init python:
 
             buffer_otl.blit(store.bg_states["TRState"].pfp,(0,0))
             buffer_otl.add_shader("SimpleOutline")
+            buffer_otl.add_uniform("u_tex0_size", (width*ds, height*ds))
             buffer_otl.add_uniform("u_radius",20)
             buffer_otl.add_uniform("u_outline_color",(0.2,0.2,1.0))
             buffer_otl.add_uniform("u_should_overlay",True)
@@ -56,4 +57,4 @@ label ReflectionIntro:
     e"Catching its shape, you see sharp edges, a perfect prism reflecting potent sunlight."
 
     e"It sits silently. Or rather floats, above coarse and humid sand."
-    return
+    jump DEBUG_MENU
