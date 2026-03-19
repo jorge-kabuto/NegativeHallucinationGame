@@ -133,7 +133,7 @@ label ph_intro:
     $ ph_set_balatro_preset("fast", 0.0)
 
     nvl clear
-    aaa "You drop down. You fall for a long time, the light leaves the tunnel through a pinpoint in the periapsis of your vision"
+    aaa "You drop down. You fall for a long time, the light leaves the tunnel through a pinpoint in the periapsis of your vision."
     aaa "Sinking deep, no colour comes to meet you. Not like before, through the sea."
     aaa "You fall, and in your falling, water comes to meet you. It catches you as a mother embraces their child, gentle caress for those forlorn."
     aaa "Your speed amerionates, and another layer, more solid, grounds you."

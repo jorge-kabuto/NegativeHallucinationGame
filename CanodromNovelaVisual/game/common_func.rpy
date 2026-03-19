@@ -44,24 +44,40 @@ init -5 python:
     import hashlib
     prev_display_menu = renpy.display_menu
     def mem_menu(items, *args, **kwargs):
+
         hashes = []
         hashes_input = []
-        for i, text_tuple in enumerate(items):
+
+        for i,text_tuple in enumerate(items):
             temp_list = list(text_tuple)
+            # Unpack safely
+            if len(temp_list) == 2:
+                text, value = temp_list
+                condition = True
+            else:
+                text, value, condition = temp_list
+
+            if not condition:
+                continue
+
             filename, line = renpy.get_filename_line()
-            hash_input = f"{filename}:{line}:{temp_list[0]}"
+            hash_input = f"{filename}:{line}:{text}"
             line_hash = hashlib.sha1(hash_input.encode("utf-8")).hexdigest()
+
+            # Modify text if seen before
+            if line_hash in renpy.store.line_dict.keys():
+                text = "{color=#3d4634}" + text + "{/color}"
+                temp_list[0] = text
+                items[i] = tuple(temp_list)
 
             hashes.append(line_hash)
             hashes_input.append(hash_input)
 
-            if line_hash in renpy.store.line_dict:
-                temp_list = list(text_tuple)
-                temp_list[0] = "{color=#3d4634}" + temp_list[0] + "{/color}"
-                items[i] = tuple(temp_list)
+        menu_result = prev_display_menu(items, *args, **kwargs)
 
-        menu_result =  prev_display_menu(items, *args, **kwargs)
-        renpy.store.line_dict[hashes[menu_result]] = hashes_input[menu_result]
+        # Safety: player may cancel menu (returns None)
+        if menu_result is not None and 0 <= menu_result < len(hashes):
+            renpy.store.line_dict[hashes[menu_result]] = hashes_input[menu_result]
 
         return menu_result
     renpy.display_menu = mem_menu
@@ -255,10 +271,10 @@ init -5 python:
         """,fragment_300="""
             vec2 p = v_coord;
             gl_FragColor.w = length(p);
-            if (gl_FragColor.w < 0.2) discard;
+            if (gl_FragColor.w < 0.1) discard;
             vec2 tuv = vec2(atan(p.y,p.x), .2/gl_FragColor.w)+u_time*u_speed_scale ;
             tuv = vec2(mod(tuv.x/3.14,1.0),mod(tuv.y/2.0,1.0));
-            gl_FragColor = texture2D(tex0, tuv) * (gl_FragColor.w*8.0);
+            gl_FragColor = texture2D(tex0, tuv) * (gl_FragColor.w*4.0);
         """,
     )
 

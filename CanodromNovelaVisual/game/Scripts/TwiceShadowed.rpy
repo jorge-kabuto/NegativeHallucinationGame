@@ -12,7 +12,7 @@ label TwiceShadowedIntro:
     tw"SPEAK THY NAME, NEW SHADOW."
     e"I don't have it yet."
     tw"TO VENTURE IN MY PRESENCE WITHOUT ONE IS A DIRE MISTAKE."
-    tw"YOU HEED NOT TO THE WARNING OF MY SPIRIT, AND SURELY OF THE MEDDLING RHOMBUS."
+    tw"YOU HEED NOT TO THE WARNING OF MY SPIRIT, AND SURELY OF THE ONE UTTERED BY THE MEDDLING RHOMBUS."
     tw"WHAT ARE YOUR INTENTIONS? AMUSE ME, SHADOW."
 
 label tw_01_menu:
@@ -96,7 +96,7 @@ label tw_02_bargain:
             jump tw_02_bargain
         "What will happen to me?" if tw_02_bargain==True:
             tw "AH, SO THE ALL-KNOWING MIRROR, SAVANT BEYOND MEASURE, HAPPENED TO SKIP OVER THAT PART."
-            tw "THEY, AND I, ARE THE LAST INHABITANTS OF THE DREAM. SHOULD YOU ASK THEM WHY, YOU WILL COME BACK..."
+            tw "THEY, AND I, ARE THE LAST INHABITANTS OF THIS BLASTED DREAM. SHOULD YOU ASK THEM WHY, YOU WILL COME BACK..."
             tw "BEGGING FOR AN OUT."
             e "So you don't have any intention of telling me?"
             e "What, is The Reflection the official dispenser of knowledge around here?"
