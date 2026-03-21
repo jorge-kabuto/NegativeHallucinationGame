@@ -74,7 +74,7 @@ init python:
 
         def render(self, width, height, st, at):
             
-            ds = 1.0/8.0
+            ds = 1.0/4.0
             if store.bg_states["PhState"].tex is None:
                 store.bg_states["PhState"].tex = renpy.load_image("images/backgrounds/dark_waters.png")
             if store.bg_states["PhState"].pfp is None:
@@ -110,9 +110,9 @@ init python:
             buffer_a.blit(store.bg_states["PhState"].tex,(0,0))
 
             store.bg_states["PhState"].tex = renpy.render_to_surface(buffer_a, resize=False)
-            buffer_b.add_shader("Tunnel")
-            buffer_b.add_uniform("u_speed_scale",0.0)
-            buffer_b.blit(store.bg_states["PhState"].tex,(0,0))
+            # buffer_b.add_shader("Tunnel")
+            # buffer_b.add_uniform("u_speed_scale",0.0)
+            # buffer_b.blit(store.bg_states["PhState"].tex,(0,0))
             
             
             present = renpy.Render(width, height)
@@ -120,7 +120,7 @@ init python:
             scaled_tex_a = renpy.display.scale.smoothscale(store.bg_states["PhState"].tex, (width, height))
             scaled_tex_b = renpy.display.scale.smoothscale(renpy.render_to_surface(buffer_b, resize=False), (width, height))
             present.blit(scaled_tex_a,(0,0))
-            present.blit(scaled_tex_b,(0,0))
+            # present.blit(scaled_tex_b,(0,0))
             present.blit(buffer_otl,(0,0))
             renpy.redraw(self, 0)
 

@@ -49,12 +49,26 @@ label ReflectionIntro:
     scene black
     show expression tr_bg at default_bg
 
-    e"Slowly, circumspect neural pathways activate. Your body comes to be."
-    e"Being, turns out, is pretty rough."
-    e"You cough violently, your chest jumpstarting a tingling akin to burning."
-    e"Your eyes open, searing wounds in your face."
-    e"An enourmous blotch of blue fills your view, although not as dark as before."
-    e"Catching its shape, you see sharp edges, a perfect prism reflecting potent sunlight."
+    aaa "Slowly, circumspect neural pathways activate. Your body comes to be."
+    aaa "Being, turns out, is pretty rough."
+    aaa "You cough violently, your chest jumpstarting a tingling akin to burning."
+    aaa "Your eyes open, searing wounds in your face."
+    aaa "An enourmous blotch of blue fills your view, although not as dark as before."
+    aaa "Catching its shape, you see sharp edges, a perfect prism reflecting potent sunlight."
 
-    e"It sits silently. Or rather floats, above coarse and humid sand."
+    aaa "It sits silently. Or rather floats, above coarse and humid sand."
+    r "Greetings, new Citizen."
+    r "Take your time, this reality can be hard to adjust to for those that have just arrived."
+    aaa "Their tone is monotone. They offer no help, although it's unclear how they provide it without limbs."
+    aaa "Your breathing steadies, the sharp light becomes more bearable."
+    e "...Where am I? What are you supposed to be?"
+    aaa "Their surface ripples slightly, its pond-like surface disturbed, but not broken."
+    r "All your questions will be answered in time, Citizen."
+    r "I am The Reflection, they who orders the world. It is my duty to make sense of this world, imagined as it may be."
+    
+    menu(nvl=True):
+        "And what are you supposed to reflect?":
+        "What do you even mean by imagined? That felt terrifyingly *real*":
+        "I almost died here!! And you did nothing at all to help me!":
+        "*Kick their shiny back-bottom*"
     jump DEBUG_MENU
