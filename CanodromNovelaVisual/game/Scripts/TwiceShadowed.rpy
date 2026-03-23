@@ -105,7 +105,7 @@ label tw_02_bargain:
             tw "YOU HAVE ALL THE TIME IN THE WORLD."
             jump tw_02_bargain
         "I actually have to carry out some expert consultations beforehand.":
-            tw "AH... OF COURSE. GO AND EXPLAIN THIS TO ALL YOUR 'FRIENDS' WHEREVER THEY MAY BE."
+            tw "AH... OF COURSE. GO AND EXPLAIN THIS TO ALL YOUR 'EXPERTS' WHEREVER THEY MAY BE."
             tw "I WILL BE *AROUND*. IN TIME, WE SHALL MEET AGAIN."
             jump DEBUG_MENU
         "I will do whatever needs to be done to get out.":

@@ -39,14 +39,17 @@ define slowfade = Fade(1.0, 0.0, 3.0)
     # xoffset 1920*0.08
 
 label start:
-
+    default submerge_bg = SubmergeBackground(image_path="images/backgrounds/dark_waters.png")
+    $ submerge_set_preset("pf_start", 0.0)
+    # $ submerge_set_preset("pf_emerging", 0.0)
     # Show a background. This uses a placeholder by default, but you can
     # add a file (named either "bg room.png" or "bg room.jpg") to the
     # images directory to show it.
     # scene expression ReactionDiffusion()
     # scene dark_waters at reaction_diffusion
     scene black
-    show dark_waters at submerge_default
+    # show dark_waters at submerge_pf
+    show expression submerge_bg
     with slowfade
     play sound beach_01
     # jump TwiceShadowedIntro
@@ -77,6 +80,7 @@ label intro_menu_01:
             n "The current seems to... accelerate, responding to you as a foreign body."
             n "You no longer belong here, and long to escape."
 
+    $ submerge_set_preset("pf_emerging", 6.0)
     n "Countours are imagined and projected: a limit on the dark, something to both sustain and contain it."
     n "The deepest of azures fills you now. There's a top and a bottom, dissonance emerging."
     n "You wander upwards, buoyant despite never having drawn breath."

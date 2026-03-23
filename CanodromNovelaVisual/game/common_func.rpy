@@ -159,7 +159,6 @@ init -5 python:
         """,
 
         fragment_300="""
-            //#extension GL_EXT_gpu_shader4: enable
             vec2 uv = v_coord;
             //vec2 texSize = vec2(textureSize2D(tex0, 0));
             vec2 texSize = u_tex0_size;

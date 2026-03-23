@@ -359,6 +359,7 @@ transform menu_title_tr:
 
 screen main_menu():
 
+    add gui.main_menu_background at submerge_main_menu
     ## This ensures that any other menu screen is replaced.
     tag menu
 
@@ -381,7 +382,6 @@ screen main_menu():
 
             #text "[config.version]":#Hides version from the main menu screen
                 #style "main_menu_version"
-    add gui.main_menu_background at submerge_default
 
 
 style main_menu_frame is empty
@@ -557,7 +557,7 @@ style return_button:
 ## example of how to make a custom screen.
 
 screen about():
-
+    zorder 51
     tag menu
 
     ## This use statement includes the game_menu screen inside this one. The
@@ -609,14 +609,14 @@ style about_label_text:
 ## www.renpy.org/doc/html/screen_special.html#load
 
 screen save():
-
+    zorder 51
     tag menu
 
     use file_slots(_("Save"))
 
 
 screen load():
-
+    zorder 51
     tag menu
 
     use file_slots(_("Load"))
@@ -738,7 +738,7 @@ style slot_button_text:
 ## https://www.renpy.org/doc/html/screen_special.html#preferences
 
 screen preferences():
-
+    zorder 51
     tag menu
 
     use game_menu(_("Options"), scroll="viewport"):
@@ -910,7 +910,7 @@ style slider_vbox:
 ## https://www.renpy.org/doc/html/history.html
 
 screen history():
-
+    zorder 51
     tag menu
 
     ## Avoid predicting this screen, as it can be very large.
@@ -1000,7 +1000,7 @@ style history_label_text:
 ## help.
 
 screen help():
-
+    zorder 51
     tag menu
 
     default device = "keyboard"
@@ -1382,6 +1382,10 @@ screen typewriter_input():
     
 screen past_dialogue(dialogue, items=None):
     zorder 49
+
+    if _in_replay or _menu:
+        pass
+
     if len(items) > 0:
         $ total_offset = -gui.nvl_button_y_size * 0.1 + 10
     else:
@@ -1430,12 +1434,18 @@ screen past_dialogue(dialogue, items=None):
 
 screen nvl(dialogue, items=None):
     zorder 50
+    tag nvl
+
+    if _in_replay or _menu:
+        pass
+    
+    use past_dialogue(dialogue=dialogue, items=items)
+
     if items:
         for i in range(min(len(items), 9)):
             key "K_%d" % (i+1) action items[i].action
             key "K_KP%d" % (i+1) action items[i].action
-        
-    use past_dialogue(dialogue=dialogue, items=items)
+    
     if len(items) > 0:
         $ total_offset = -gui.nvl_button_y_size * 0.1 + 10
     else:
@@ -1453,7 +1463,6 @@ screen nvl(dialogue, items=None):
 
     window:
         style "nvl_window"
-        # background "nvl_textbox_bg.png"
 
         has vbox:
             yanchor 1.0

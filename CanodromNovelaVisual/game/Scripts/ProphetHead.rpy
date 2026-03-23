@@ -78,14 +78,15 @@ init python:
             if store.bg_states["PhState"].tex is None:
                 store.bg_states["PhState"].tex = renpy.load_image("images/backgrounds/dark_waters.png")
             if store.bg_states["PhState"].pfp is None:
-                store.bg_states["PhState"].pfp = renpy.load_image(self.image_path)
+                store.bg_states["PhState"].pfp = Image(self.image_path)
 
             u = ph_get_uniforms(st)
             buffer_a = renpy.Render(width*ds, height*ds)
             buffer_b = renpy.Render(width*ds, height*ds)
             buffer_otl = renpy.Render(width*ds, height*ds)
 
-            buffer_otl.blit(store.bg_states["PhState"].pfp,(0,0))
+            pfp_render = renpy.render(store.bg_states["PhState"].pfp, 1000, 1000, st, at)
+            buffer_otl.blit(pfp_render,(0,0))
             buffer_otl.add_shader("SimpleOutline")
             # buffer_otl.add_uniform("u_tex0_size", (width*ds, height*ds))
             buffer_otl.add_uniform("u_radius",10)

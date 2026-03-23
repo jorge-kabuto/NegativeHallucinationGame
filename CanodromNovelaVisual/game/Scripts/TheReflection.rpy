@@ -18,12 +18,13 @@ init python:
             if store.bg_states["TRState"].tex is None:
                 store.bg_states["TRState"].tex = renpy.load_image("images/backgrounds/dark_waters.png")
             if store.bg_states["TRState"].pfp is None:
-                store.bg_states["TRState"].pfp = renpy.load_image(self.image_path)
+                store.bg_states["TRState"].pfp = Image(self.image_path)
 
             buffer_a = renpy.Render(width*ds, height*ds)
             buffer_otl = renpy.Render(width*ds, height*ds)
 
-            buffer_otl.blit(store.bg_states["TRState"].pfp,(0,0))
+            pfp_render = renpy.render(store.bg_states["TRState"].pfp, 1000,1000,st,at)
+            buffer_otl.blit(pfp_render,(0,0))
             buffer_otl.add_shader("SimpleOutline")
             buffer_otl.add_uniform("u_tex0_size", (width*ds, height*ds))
             buffer_otl.add_uniform("u_radius",20)
@@ -34,6 +35,9 @@ init python:
 
             buffer_a.blit(store.bg_states["TRState"].tex,(0,0))
             buffer_a.add_shader("submerge")
+            u = submerge_get_uniforms(st)
+            for key, value in u.items():
+                buffer_a.add_uniform(key, value)
             
             present = renpy.Render(width, height)
 
@@ -66,9 +70,9 @@ label ReflectionIntro:
     r "All your questions will be answered in time, Citizen."
     r "I am The Reflection, they who orders the world. It is my duty to make sense of this world, imagined as it may be."
     
-    menu(nvl=True):
-        "And what are you supposed to reflect?":
-        "What do you even mean by imagined? That felt terrifyingly *real*":
-        "I almost died here!! And you did nothing at all to help me!":
-        "*Kick their shiny back-bottom*"
+    # menu(nvl=True):
+    #     "And what are you supposed to reflect?":
+    #     "What do you even mean by imagined? That felt terrifyingly *real*":
+    #     "I almost died here!! And you did nothing at all to help me!":
+    #     "*Kick their shiny back-bottom*":
     jump DEBUG_MENU

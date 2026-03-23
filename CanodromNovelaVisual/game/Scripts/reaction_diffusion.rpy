@@ -26,17 +26,23 @@ init python:
         def render(self, width, height, st, at):
             
             ds = 1.0/2.0
+            pfp_ds = ds
             if reacdiff_state.tex is None:
                 reacdiff_state.tex = renpy.load_image("images/backgrounds/dark_waters.png")
             if reacdiff_state.pfp is None:
-                reacdiff_state.pfp = renpy.load_image(self.image_path)
+                reacdiff_state.pfp = Image(self.image_path)
 
             buffer_a = renpy.Render(width*ds, height*ds)
             buffer_otl = renpy.Render(width*ds, height*ds)
 
+            if renpy.emscripten:
+                pfp_ds = 1.0  # disable downscaling on web
+
+            pfp_render = renpy.render(reacdiff_state.pfp, 1000, 1000, st, at)
+            
             buffer_otl.add_shader("SimpleOutline")
-            buffer_otl.blit(reacdiff_state.pfp,(0,0))
-            buffer_otl.add_uniform("u_tex0_size", (width*ds, height*ds))
+            buffer_otl.blit(pfp_render,(0,0))
+            buffer_otl.add_uniform("u_tex0_size", (width*pfp_ds, height*pfp_ds))
             buffer_otl.add_uniform("u_radius",3)
             buffer_otl.add_uniform("u_outline_color",(1.0,0.0,0.0))
             buffer_otl.add_uniform("u_should_overlay",True)
