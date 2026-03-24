@@ -3,7 +3,36 @@ transform default_bg(framerate=60.0):
     pause 1.0/framerate
     repeat
 
+# init -10 python:
+#     def install_argos_languages():
+#         import argostranslate.package
+#         import argostranslate.translate
+
+#         target_languages = [
+#             ("Arabic",  "ar"),
+#             ("Greek",   "el"),
+#             ("Tagalog", "tl"),
+#         ]
+
+#         argostranslate.package.update_package_index()
+#         available_packages = argostranslate.package.get_available_packages()
+#         installed = argostranslate.translate.get_installed_languages()
+#         installed_codes = {l.code for l in installed}
+
+#         for name, to_code in target_languages:
+#             if to_code not in installed_codes:
+#                 pkg = next(
+#                     (p for p in available_packages if p.from_code == "en" and p.to_code == to_code),
+#                     None
+#                 )
+#                 if pkg:
+#                     renpy.log("Installing Argos package for {}...".format(name))
+#                     argostranslate.package.install_from_path(pkg.download())
+#                 else:
+#                     renpy.log("No Argos package found for {}.".format(name))
+
 define prev_was_menu = False
+define using_babel_mode = False
 init -5 python:
     config.keymap["dismiss"].append("K_1")
     # renpy.exports.get_sdl_window_pointer()
@@ -40,6 +69,25 @@ init -5 python:
 
         store.gui.nvl_anim_time = prev_anim_time
         func("{cps=0}"+what, *args, **kwargs)
+
+    def babel(what, func, *args, **kwargs):
+
+        prev_anim_time = store.gui.nvl_anim_time
+        store.gui.nvl_anim_time = 0.0
+        store.using_babel_mode = True
+
+        import os
+        import random
+
+        fonts = [f for f in os.listdir(renpy.config.gamedir + "/Fonts") if f.endswith(".ttf") or f.endswith(".otf")]
+ 
+        for i in range(gui.nvl_list_length-1):
+            font = random.choice(fonts)
+            func("{font=" + font + "}" + what + "{/font}", interact=False)
+        
+        func(what, *args, **kwargs) 
+        store.gui.nvl_anim_time = prev_anim_time
+
     
     import hashlib
     prev_display_menu = renpy.display_menu
@@ -94,6 +142,10 @@ init -5 python:
             store.prev_was_menu = True
         
     config.statement_callbacks.append(menu_prev_line)
+
+    def reset_statement_type(name):
+        store.using_babel_mode = False
+    config.statement_callbacks.append(reset_statement_type)
 
     renpy.register_shader("example.gradient", variables="""
         uniform vec4 u_gradient_left;

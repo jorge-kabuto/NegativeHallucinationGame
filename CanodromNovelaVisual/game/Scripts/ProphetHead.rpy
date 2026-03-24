@@ -142,10 +142,10 @@ label ph_intro:
     aaa "The walls are luminous reflection, the air rather damp."
     aaa "There, against the wall, a disembodied head. Its gaze, two trembling moons of green, indicates that they are, against all odds, alive."
     ph ".................."
-    ph "You shouldn't have come."
+    babel "You shouldn't have come." (func=ph)
     $ ph_set_balatro_preset("default", 10.0)
-    ph "You couldn't have, even if you wanted to."
-    ph "...*Cough-gh* Sorry. Long time without a talk. What is your name?"
+    babel "You couldn't have, even if you wanted to." (func=ph)
+    babel "...*Cough-gh* Sorry. Long time without a talk. What is your name?" (func=ph)
 label ph_1:
     menu (nvl=True):
         "Yours comes first.":

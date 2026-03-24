@@ -1415,6 +1415,7 @@ screen past_dialogue(dialogue, items=None):
             first_spacing gui.nvl_spacing
             xpos 100
             order_reverse False
+            
 
         #Adding effect that fades past dialogue:
         # Display dialogue.
@@ -1425,12 +1426,16 @@ screen past_dialogue(dialogue, items=None):
                     yoffset -(len(dialogue) > 1)
                     if i <= len(dialogue) - 2:
                         if who is not None:
-                            text who id who_id at nvl_faded(len(dialogue) - i)
-                        text what id what_id at nvl_faded(len(dialogue) - i)
-                    # else:
-                    #     if who is not None:
-                    #         text who id who_id at nvl_faded(len(dialogue) - i)
-                    #     text what id what_id at nvl_faded(len(dialogue) - i)
+                            text who id who_id at nvl_faded(len(dialogue) - i):
+                                if using_babel_mode:
+                                    textshader "typewriter"
+                                    slow_cps True
+                                    slow_cps_multiplier 1.0
+                        text what id what_id at nvl_faded(len(dialogue) - i):
+                            if using_babel_mode:
+                                textshader "typewriter"
+                                slow_cps True
+                                slow_cps_multiplier 1.0
 
 screen nvl(dialogue, items=None):
     zorder 50
@@ -1594,8 +1599,8 @@ style nvl_button_text:
     font "Fonts/PilcrowRounded-Variable.ttf"
     yanchor 0.5
     # xanchor 0.0
-    textshader "typewriter"
     text_align 0.0
+    textshader "typewriter"
     slow_cps True
     slow_cps_multiplier 1.0
     slow_abortable True
